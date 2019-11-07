@@ -1,4 +1,8 @@
-import { ValueType, PickerValue, ValueStatus } from "../SingleDatePicker";
+import {
+  ValueType,
+  PickerValue,
+  ValueStatus
+} from "../SingleDatePicker/SingleDatePicker.d";
 
 export interface RangePickerValue {
   [ValueStatus.Start]: ValueType | undefined;

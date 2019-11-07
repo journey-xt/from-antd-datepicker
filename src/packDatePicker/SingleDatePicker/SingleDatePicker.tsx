@@ -42,7 +42,7 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
     showToday,
     defaultPickerValue,
     disabledDate,
-    selectTodayAfter,
+    selectTodayAfter
   } = props;
 
   const [dateValue, setDateValue] = useState(transformMoment(value));
@@ -85,12 +85,9 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
     [disabledDate, selectTodayAfter, dateValue, valueStatus]
   );
 
-  useEffect(
-    () => {
-      setDateValue(transformMoment(value));
-    },
-    [value]
-  );
+  useEffect(() => {
+    setDateValue(transformMoment(value));
+  }, [value]);
 
   return (
     <PackDataPick
