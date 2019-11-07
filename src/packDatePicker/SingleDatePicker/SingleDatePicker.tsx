@@ -7,7 +7,7 @@ import { transformMoment, transformTimeStamp } from "../utils";
 
 // 声明文件
 import { Moment } from "moment/moment.d";
-import { ValueType, PickerValue, ValueStatus } from "../../typings.d";
+import { ValueType, PickerValue, ValueStatus } from "../../typings";
 
 moment.locale("zh-cn");
 

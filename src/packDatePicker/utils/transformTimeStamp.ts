@@ -1,4 +1,4 @@
-import { ValueStatus } from "../SingleDatePiker/SingleDatePicker.d";
+import { ValueStatus } from "../../typings";
 import monent from "moment";
 /**
  * 将传入的 moment 对象转换为 时间戳形式

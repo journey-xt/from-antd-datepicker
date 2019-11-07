@@ -21,20 +21,20 @@
     "predeploy": "cd example && yarn install && yarn run build",
     "deploy": "gh-pages -d example/build"
   },
-  "dependencies": {
-    "@types/styled-components": "^4.1.21",
-    "antd": "^3.25.0",
-    "styled-components": "^4.4.1"
-  },
+  "dependencies": {},
   "peerDependencies": {
+    "antd": "^3.25.0",
     "react": "^16.11.0",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "styled-components": "^4.4.1",
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
     "@types/jest": "^23.1.5",
     "@types/react": "^16.9.11",
+    "@types/antd": "^1.0.0",
     "@types/react-dom": "^16.9.3",
+    "@types/styled-components": "^4.1.21",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.4",
