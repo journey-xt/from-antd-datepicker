@@ -1,17 +1,19 @@
-/**
- * Default CSS definition for typescript,
- * will be overridden with file-specific definitions by rollup
- */
-declare module '*.css' {
-  const content: { [className: string]: string };
-  export default content;
+import { Moment as StatementMoment } from "moment/moment.d";
+
+export enum ValueType {
+  TimeStamp = "timeStamp", // 时间戳
+  TimeString = "timeString", // 字符串时间
+  Moment = "moment" // moment对象
 }
 
-interface SvgrComponent extends React.StatelessComponent<React.SVGAttributes<SVGElement>> {}
+export enum ValueStatus {
+  Start = "start", // 开始时间
+  End = "end" // 结束时间
+}
 
-declare module '*.svg' {
-  const svgUrl: string;
-  const svgComponent: SvgrComponent;
-  export default svgUrl;
-  export { svgComponent as ReactComponent }
+export type PickerValue = string | number | StatementMoment | null;
+
+export interface RangePickerValue {
+  [ValueStatus.Start]: ValueType | undefined;
+  [ValueStatus.End]: ValueType | undefined;
 }

@@ -7,11 +7,7 @@ import { Moment } from "moment/moment.d";
 import { RangePickerValue } from "./RangePicker.d";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
-import {
-  ValueStatus,
-  ValueType,
-  PickerValue
-} from "../SingleDatePicker/SingleDatePicker.d";
+import { ValueStatus, ValueType, PickerValue } from "../../typings.d";
 
 const LayoutCol = styled(Col)`
   position: relative;
