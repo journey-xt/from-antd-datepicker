@@ -36,6 +36,7 @@ export default {
     typescript({
       rollupCommonJSResolveHack: true,
       clean: true,
+      exclude: [],
     }),
     commonjs(),
   ],

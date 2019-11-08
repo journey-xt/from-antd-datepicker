@@ -4,10 +4,11 @@ import { Row, Col } from "antd";
 import moment from "moment";
 // 声明文件
 import { Moment } from "moment/moment.d";
-import { RangePickerValue } from "./RangePicker.d";
+import { RangePickerValue } from "./typeing";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
-import { ValueStatus, ValueType, PickerValue } from "../../typings";
+import { PickerValue } from "../SingleDatePicker/typeing";
+import { ValueStatus, ValueType } from "../SingleDatePicker/enum";
 
 const LayoutCol = styled(Col)`
   position: relative;
@@ -43,7 +44,7 @@ const RangePicker = (props: Props) => {
 
   const [RangeValue, setRangeValue] = useState<RangePickerValue>({
     [ValueStatus.Start]: undefined,
-    [ValueStatus.End]: undefined
+    [ValueStatus.End]: undefined,
   });
 
   // 时间变化回调
@@ -52,12 +53,12 @@ const RangePicker = (props: Props) => {
       if (onChange) {
         onChange({
           ...RangeValue,
-          ...(valueStatus ? { [valueStatus]: value } : {})
+          ...(valueStatus ? { [valueStatus]: value } : {}),
         });
       } else {
         setRangeValue({
           ...RangeValue,
-          ...(valueStatus ? { [valueStatus]: value } : {})
+          ...(valueStatus ? { [valueStatus]: value } : {}),
         });
       }
     },
@@ -108,16 +109,19 @@ const RangePicker = (props: Props) => {
   );
 
   // 上层porps变化
-  useEffect(() => {
-    if (value !== undefined) {
-      setRangeValue(value);
-    } else {
-      setRangeValue({
-        [ValueStatus.Start]: undefined,
-        [ValueStatus.End]: undefined
-      });
-    }
-  }, [value]);
+  useEffect(
+    () => {
+      if (value !== undefined) {
+        setRangeValue(value);
+      } else {
+        setRangeValue({
+          [ValueStatus.Start]: undefined,
+          [ValueStatus.End]: undefined,
+        });
+      }
+    },
+    [value]
+  );
 
   return (
     <Row gutter={24}>

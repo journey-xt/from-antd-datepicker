@@ -7,7 +7,8 @@ import { transformMoment, transformTimeStamp } from "../utils";
 
 // 声明文件
 import { Moment } from "moment/moment.d";
-import { ValueType, PickerValue, ValueStatus } from "../../typings";
+import { PickerValue } from "./typeing";
+import { ValueType, ValueStatus } from "./enum";
 
 moment.locale("zh-cn");
 
@@ -42,7 +43,7 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
     showToday,
     defaultPickerValue,
     disabledDate,
-    selectTodayAfter
+    selectTodayAfter,
   } = props;
 
   const [dateValue, setDateValue] = useState(transformMoment(value));
@@ -85,9 +86,12 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
     [disabledDate, selectTodayAfter, dateValue, valueStatus]
   );
 
-  useEffect(() => {
-    setDateValue(transformMoment(value));
-  }, [value]);
+  useEffect(
+    () => {
+      setDateValue(transformMoment(value));
+    },
+    [value]
+  );
 
   return (
     <PackDataPick
