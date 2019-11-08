@@ -1,7 +1,7 @@
 {
-  "name": "packdatepicker",
+  "name": "from-antd-datepicker",
   "version": "1.0.0",
-  "description": "datepicker",
+  "description": "根据antd的datepicker进行包装",
   "author": "journey-xt",
   "license": "MIT",
   "repository": "journey-xt/datepicker",
@@ -25,14 +25,13 @@
   "peerDependencies": {
     "antd": "^3.25.0",
     "react": "^16.11.0",
-    "react-dom": "^16.4.1",
-    "styled-components": "^4.4.1"
+    "react-dom": "^16.4.1"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
+    "@types/antd": "^1.0.0",
     "@types/jest": "^23.1.5",
     "@types/react": "^16.9.11",
-    "@types/antd": "^1.0.0",
     "@types/react-dom": "^16.9.3",
     "@types/styled-components": "^4.1.21",
     "babel-core": "^6.26.3",
@@ -50,6 +49,7 @@
     "rollup-plugin-postcss": "^1.6.2",
     "rollup-plugin-typescript2": "^0.17.0",
     "rollup-plugin-url": "^1.4.0",
+    "styled-components": "^4.4.1",
     "typescript": "^3.7.2"
   },
   "files": [
