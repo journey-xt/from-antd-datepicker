@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Form, Layout, Row, Col } from "antd";
 import { FormComponentProps } from "antd/lib/form";
-import SingleDatePicker, { RangePicker } from "packdatepicker";
+import SingleDatePicker, { RangePicker } from "from-antd-datepicker";
 
 interface Props extends FormComponentProps {}
 

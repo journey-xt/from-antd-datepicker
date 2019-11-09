@@ -39,7 +39,7 @@ interface Props {
   value?: RangePickerValue;
 }
 
-const RangePicker = (props: Props) => {
+const RangePicker = (props: Props, ref) => {
   const { showToday, onChange, value, selectTodayAfter, disabledDate } = props;
 
   const [RangeValue, setRangeValue] = useState<RangePickerValue>({
@@ -122,6 +122,10 @@ const RangePicker = (props: Props) => {
     },
     [value]
   );
+
+  if (!ref) {
+    ref.current = () => {};
+  }
 
   return (
     <Row gutter={24}>
@@ -296,4 +300,4 @@ const RangePicker = (props: Props) => {
 //   }
 // }
 
-export default RangePicker;
+export default React.forwardRef(RangePicker);
