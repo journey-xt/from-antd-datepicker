@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Form, Layout, Row, Col } from "antd";
 import { FormComponentProps } from "antd/lib/form";
-import SingleDatePicker, { RangePicker } from "packdatepicker";
+import SingleDatePicker, { RangePicker } from "from-antd-datepicker";
 
 interface Props extends FormComponentProps {}
 
@@ -42,5 +42,5 @@ class DatePickerDemo extends PureComponent<Props, State> {
 export default Form.create({
   onValuesChange(props, changedValues, allValues) {
     console.log(allValues.rangeDate);
-  },
+  }
 })(DatePickerDemo);
