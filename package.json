@@ -25,7 +25,8 @@
   "peerDependencies": {
     "antd": "^3.25.0",
     "react": "^16.11.0",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "styled-components": "^4.4.1"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
