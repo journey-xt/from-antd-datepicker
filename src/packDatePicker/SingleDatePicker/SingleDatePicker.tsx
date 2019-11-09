@@ -33,7 +33,7 @@ export interface SingleDatePickerProps {
   value?: string | number | Moment | Date;
 }
 
-const SingleDatePicker = (props: SingleDatePickerProps) => {
+const SingleDatePicker = (props: SingleDatePickerProps, ref) => {
   const {
     // format = "YYYY-MM-DD",
     valueStatus = ValueStatus.Start,
@@ -92,6 +92,10 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
     },
     [value]
   );
+
+  if (!ref) {
+    ref.current = () => {};
+  }
 
   return (
     <PackDataPick
@@ -207,4 +211,4 @@ const SingleDatePicker = (props: SingleDatePickerProps) => {
 //   }
 // }
 
-export default SingleDatePicker;
+export default React.forwardRef(SingleDatePicker);
