@@ -11,7 +11,6 @@
     "@types/react-dom": "16.9.3",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
-    "antd": "file:../node_modules/antd",
     "babel-eslint": "10.0.3",
     "babel-jest": "^24.9.0",
     "babel-loader": "8.0.6",
@@ -60,7 +59,7 @@
     "styled-components": "file:../node_modules/styled-components",
     "terser-webpack-plugin": "1.4.1",
     "ts-pnp": "1.1.4",
-    "typescript": "3.6.4",
+    "typescript": "file:../node_modules/typescript",
     "url-loader": "2.1.0",
     "webpack": "4.41.0",
     "webpack-dev-server": "3.2.1",
@@ -137,9 +136,7 @@
       "jest-watch-typeahead/testname"
     ]
   },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
+  "devDependencies": {
+    "babel-plugin-import": "^1.12.2"
   }
 }
