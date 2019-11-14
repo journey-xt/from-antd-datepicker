@@ -17,22 +17,19 @@ export default {
       file: pkg.main,
       format: "cjs",
       exports: "named",
-      sourcemap: true,
+      sourcemap: true
     },
     {
       file: pkg.module,
       format: "es",
       exports: "named",
-      sourcemap: true,
-    },
+      sourcemap: true
+    }
   ],
   plugins: [
     external(),
-    babel({
-      exclude: "node_modules/**",
-    }),
     postcss({
-      modules: true,
+      modules: true
     }),
     url(),
     svgr(),
@@ -40,8 +37,11 @@ export default {
     typescript({
       rollupCommonJSResolveHack: true,
       clean: true,
-      exclude: [],
+      exclude: []
     }),
-    commonjs(),
-  ],
+    babel({
+      exclude: "node_modules/**"
+    }),
+    commonjs()
+  ]
 };
