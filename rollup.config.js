@@ -26,6 +26,7 @@ export default {
       sourcemap: true
     }
   ],
+  experimentalCodeSplitting: true,
   plugins: [
     external(),
     postcss({

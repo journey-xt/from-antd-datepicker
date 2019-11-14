@@ -44,7 +44,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     super(props);
     this.state = {
       currentDate: moment(), // 当前时间
-      value: props.value, // 内部维护 时间组件的值得
+      value: props.value // 内部维护 时间组件的值得
     };
   }
 
@@ -60,7 +60,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    selectTodayAfter: true,
+    selectTodayAfter: true
   };
 
   // 不可选择时间回调
