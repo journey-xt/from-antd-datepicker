@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
-import { DatePicker } from "antd";
+import { DatePicker, Button } from "antd";
+import { memoize } from "lodash";
 import moment from "moment";
-import "moment/locale/zh-cn";
+import TimePicker from "../TimePicker";
 // import { transformMoment, transformTimeStamp } from "../utils";
 
 // 声明文件
@@ -10,10 +11,19 @@ import { Moment } from "moment/moment.d";
 import { PickerValue } from "./typeing";
 import { ValueType, ValueStatus } from "./enum";
 
-moment.locale("zh-cn");
-
 const PackDataPick = styled(DatePicker)`
   width: 100%;
+`;
+
+const RenderTimeWarp = styled.div`
+  padding-right: 50px;
+  position: relative;
+  .ant-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -12px;
+  }
 `;
 
 // 声明组件Props类型
@@ -124,11 +134,44 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   };
 
   // 添加额外的的页脚render
-  renderExtraFooter = () => <div>9999</div>;
+  // 需要选择 时分秒生成module
+  renderExtraFooter = memoize((moment: Moment, showTime: boolean) => {
+    if (showTime) {
+      return (
+        <RenderTimeWarp>
+          <TimePicker {...showTime} value={moment} />
+          <Button size="small" type="primary">
+            确定
+          </Button>
+        </RenderTimeWarp>
+      );
+    }
+    return null;
+  });
+
+  // 根据传递 showTime Props 获得 timePicker的Props
+  timePickerProps = memoize((showTime, value) => {
+    if (showTime === "object") {
+      return {
+        value,
+        format: "HH:mm:ss",
+        ...showTime
+      };
+    }
+    return {
+      value,
+      format: "HH:mm:ss"
+    };
+  });
 
   render() {
     const { value } = this.state;
-    const { defaultPickerValue, showToday } = this.props;
+    const { defaultPickerValue, showToday, showTime } = this.props;
+
+    const timeProps = showTime ? this.timePickerProps(showTime, value) : false;
+
+    const renderExtraFooter = this.renderExtraFooter(timeProps);
+
     return (
       <PackDataPick
         value={this.transformValue(value)}
@@ -136,7 +179,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         disabledDate={this.disabledDate}
         defaultPickerValue={defaultPickerValue}
         showToday={showToday}
-        //  renderExtraFooter={this.renderExtraFooter}
+        renderExtraFooter={renderExtraFooter}
       />
     );
   }
