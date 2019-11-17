@@ -46,15 +46,20 @@ export interface SingleDatePickerProps {
 // 声明组件State类型
 type State = {
   currentDate: Moment;
+  dateLayer: boolean;
   value?: string | number | Moment | Date;
 };
 
 class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
+  timeLayer: boolean;
+
   constructor(props) {
     super(props);
+    this.timeLayer = false;
     this.state = {
       currentDate: moment(), // 当前时间
-      value: props.value // 内部维护 时间组件的值得
+      value: props.value, // 内部维护 时间组件的值得
+      dateLayer: false
     };
   }
 
@@ -135,11 +140,20 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
-  renderExtraFooter = memoize((moment: Moment, showTime: boolean) => {
+  renderExtraFooter = () => {
+    const { showTime } = this.props;
+    const { value } = this.state;
+
     if (showTime) {
+      const props = this.timePickerProps(showTime, value);
       return (
         <RenderTimeWarp>
-          <TimePicker {...showTime} value={moment} />
+          <TimePicker
+            {...props}
+            timePickerOnOpenChange={this.timePickOnOpenChange}
+            datePickerOnOpenChange={this.onOpenChange}
+            value={value}
+          />
           <Button size="small" type="primary">
             确定
           </Button>
@@ -147,7 +161,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       );
     }
     return null;
-  });
+  };
 
   // 根据传递 showTime Props 获得 timePicker的Props
   timePickerProps = memoize((showTime, value) => {
@@ -164,22 +178,45 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     };
   });
 
-  render() {
+  // 文档写的是 显示面板回调  但是貌似是 获取焦点和失去焦点回调
+  onOpenChange = (status: boolean) => {
+    if (this.timeLayer) {
+      return;
+    }
     const { value } = this.state;
-    const { defaultPickerValue, showToday, showTime } = this.props;
+    const { showTime } = this.props;
 
-    const timeProps = showTime ? this.timePickerProps(showTime, value) : false;
+    if (status) {
+      this.setState({
+        dateLayer: status
+        //    ...(!value ? { defaultDate: moment(new Date()) } : {})
+      });
+    } else {
+      this.setState({
+        dateLayer: status
+      });
+    }
+  };
 
-    const renderExtraFooter = this.renderExtraFooter(timeProps);
+  // 时间组件 面板回调
+  timePickOnOpenChange = status => {
+    this.timeLayer = status;
+  };
+
+  render() {
+    const { value, dateLayer } = this.state;
+    const { defaultPickerValue, showToday } = this.props;
 
     return (
       <PackDataPick
         value={this.transformValue(value)}
+        onOpenChange={this.onOpenChange}
         onChange={this.onChange}
         disabledDate={this.disabledDate}
         defaultPickerValue={defaultPickerValue}
         showToday={showToday}
-        renderExtraFooter={renderExtraFooter}
+        renderExtraFooter={this.renderExtraFooter}
+        open={dateLayer}
       />
     );
   }

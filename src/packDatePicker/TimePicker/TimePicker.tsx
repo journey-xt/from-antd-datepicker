@@ -16,6 +16,8 @@ interface Props {
   hourStep?: number;
   minuteStep?: number;
   secondStep?: number;
+  timePickerOnOpenChange: (status: boolean) => void;
+  datePickerOnOpenChange: (status: boolean) => void;
 }
 
 interface State {
@@ -48,7 +50,7 @@ class TimePicker extends PureComponent<Props, State> {
 
   // 根据 format获得时间间隔 最大值
   formatStep = memoize(format => {
-    const { hourStep, minuteStep, secondStep } = this.props;
+    const { hourStep = 1, minuteStep = 5, secondStep = 10 } = this.props;
 
     const { value } = this.state;
     const hour = value.hour();
@@ -59,15 +61,15 @@ class TimePicker extends PureComponent<Props, State> {
         return {
           step: hourStep,
           max: 24,
-          value: fillTen(hour),
-          disabledTime: disabledHours
+          value: fillTen(hour)
+          //        disabledTime: disabledHours
         };
       case MINUTE: // 为分钟的input框的值
         return {
           step: minuteStep,
           max: 60,
           value: fillTen(minute),
-          disabledTime: disabledMinutes,
+          //      disabledTime: disabledMinutes,
           hour
         };
       case SEC: // 为秒的input框的值
@@ -75,7 +77,7 @@ class TimePicker extends PureComponent<Props, State> {
           step: secondStep,
           max: 60,
           value: fillTen(second),
-          disabledTime: disabledSeconds,
+          //    disabledTime: disabledSeconds,
           hour,
           minute
         };
@@ -129,7 +131,11 @@ class TimePicker extends PureComponent<Props, State> {
   });
 
   render() {
-    const { format } = this.props;
+    const {
+      format,
+      timePickerOnOpenChange,
+      datePickerOnOpenChange
+    } = this.props;
 
     const splitSymbol = this.splitSymbol(format);
 
@@ -139,7 +145,12 @@ class TimePicker extends PureComponent<Props, State> {
       <Warp>
         {splitFormat.map(item => (
           <span key={item}>
-            <TimeInput {...this.formatStep(item)} />
+            <TimeInput
+              format={item}
+              {...this.formatStep(item)}
+              timePickerOnOpenChange={timePickerOnOpenChange}
+              datePickerOnOpenChange={datePickerOnOpenChange}
+            />
             {this.formatRender(item)}
           </span>
         ))}

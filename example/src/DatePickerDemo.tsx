@@ -28,6 +28,13 @@ class DatePickerDemo extends PureComponent<Props, State> {
               </Form.Item>
             </Col>
             <Col span={8}>
+              <Form.Item label="单个时间(带时间)">
+                {getFieldDecorator("singleDateTime")(
+                  <SingleDatePicker showTime />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item label="联级时间">
                 {getFieldDecorator("rangeDate")(<RangePicker />)}
               </Form.Item>

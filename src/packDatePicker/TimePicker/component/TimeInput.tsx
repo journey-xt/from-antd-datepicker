@@ -1,15 +1,8 @@
-/* @flow */
 import React, { PureComponent, RefObject } from "react";
-
 import styled from "styled-components";
-
 import { Input, Popover } from "antd";
-
-import "moment/locale/zh-cn";
-
 import PopoverRender from "./PopoverRender";
-
-import { formatTimeShow } from "./tools";
+import { fillTen } from "../../utils";
 
 const InputWarp = styled.div`
   display: inline-block;
@@ -20,16 +13,17 @@ const InputWarp = styled.div`
 `;
 
 interface Props {
-  title: string | React.ReactNode;
+  // title: string | React.ReactNode;
+  value: any;
   format: string;
   max: number;
   step: number;
-  hour: number;
-  minute: number;
+  hour?: number;
+  minute?: number;
   // onChange: Function;
-  // datePickerOpenChange: Function;
-  // timePickOnOpenChange: Function;
-  disabledTime: Function;
+  timePickerOnOpenChange: (status: boolean) => void;
+  datePickerOnOpenChange: (status: boolean) => void;
+  // disabledTime: Function;
 }
 
 interface State {
@@ -79,10 +73,11 @@ class TimeInput extends PureComponent<Props, State> {
 
   // 获取禁止选择的时间段
   getDisabled = () => {
-    const { disabledTime, hour, minute } = this.props;
-    if (disabledTime && typeof disabledTime === "function") {
-      return disabledTime(hour || hour === 0 ? hour : minute, minute);
-    }
+    // const { disabledTime } = this.props;
+    //  const { hour, minute } = this.props;
+    // if (disabledTime && typeof disabledTime === "function") {
+    //   return disabledTime(hour || hour === 0 ? hour : minute, minute);
+    // }
     return [];
   };
 
@@ -94,7 +89,7 @@ class TimeInput extends PureComponent<Props, State> {
     while (i < max) {
       /* eslint-disable no-loop-func */
       array.push({
-        value: formatTimeShow(i),
+        value: fillTen(i),
         disabled: disableArray.some(item => i === item)
       });
       /* eslint-enable no-loop-func */
@@ -124,26 +119,26 @@ class TimeInput extends PureComponent<Props, State> {
 
   // Popover 显示隐藏回调
   onVisibleChange = visible => {
-    //  const { timePickOnOpenChange } = this.props;
-    // if (timePickOnOpenChange) {
-    //   timePickOnOpenChange(visible);
-    // }
-    //    this.setState({ visible });
+    const { timePickerOnOpenChange } = this.props;
+    if (timePickerOnOpenChange) {
+      timePickerOnOpenChange(visible);
+    }
+    this.setState({ visible });
   };
 
   // Input焦点状态按下 回车键 回调
   onPressEnter = e => {
-    //  const { timePickOnOpenChange, datePickerOpenChange } = this.props;
-    // if (timePickOnOpenChange) {
-    //   timePickOnOpenChange(false);
-    // }
-    // if (datePickerOpenChange) {
-    //   datePickerOpenChange(false);
-    // }
+    const { timePickerOnOpenChange, datePickerOnOpenChange } = this.props;
+    if (timePickerOnOpenChange) {
+      timePickerOnOpenChange(false);
+    }
+    if (datePickerOnOpenChange) {
+      datePickerOnOpenChange(false);
+    }
   };
 
   render() {
-    const { title, format, max, step, ...reset } = this.props;
+    const { value, format, max, step, ...reset } = this.props;
     const { visible } = this.state;
 
     const rownum = this.computeTagNumber(max, step);
@@ -151,20 +146,16 @@ class TimeInput extends PureComponent<Props, State> {
     return (
       <Popover
         trigger="click"
-        //   title={title}
-        //   visible={visible}
+        visible={visible}
         onVisibleChange={this.onVisibleChange}
         overlayStyle={{ zIndex: 1050, padding: "12px 4px" }}
         content={
-          visible ? (
-            <PopoverRender
-              {...reset}
-              format={format}
-              // value={value}
-              rownum={rownum}
-              onChange={this.tagOnClick}
-            />
-          ) : null
+          <PopoverRender
+            {...reset}
+            value={value}
+            rownum={rownum}
+            onChange={this.tagOnClick}
+          />
         }
         placement={format === "HH" ? "topLeft" : "top"}
       >
