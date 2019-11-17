@@ -13,14 +13,13 @@ const InputWarp = styled.div`
 `;
 
 interface Props {
-  // title: string | React.ReactNode;
-  value: any;
+  value: string;
   format: string;
   max: number;
   step: number;
   hour?: number;
   minute?: number;
-  // onChange: Function;
+  onChange?: (value: string, format: string) => void;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
   // disabledTime: Function;
@@ -45,30 +44,23 @@ class TimeInput extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    console.log(this.inputEle);
+    // console.log(this.inputEle);
   }
 
   // 输入框变化事件
   handleChange = e => {
-    // const { max } = this.props;
-    // const newValue = e.target.value;
-    // const valueLen = newValue.length;
-    // if (Number.isNaN(newValue) || Number(newValue) > max || valueLen > 2) {
-    //   return;
-    // }
-    // const disableArray = this.getDisabled();
-    // const isDisable = disableArray.some(item => item === Number(newValue));
-    // if (isDisable) {
-    //   this.setState({ value: e.target.value });
-    // } else {
-    //   this.setState({ value: e.target.value }, () => {
-    //     const { value } = this.state;
-    //     const { onChange, format } = this.props;
-    //     if (onChange) {
-    //       onChange(value || '0', format);
-    //     }
-    //   });
-    // }
+    const { max } = this.props;
+    const newValue = e.target.value;
+    const valueLen = newValue.length;
+    if (Number.isNaN(newValue) || Number(newValue) > max || valueLen > 2) {
+      return;
+    }
+    const disableArray = this.getDisabled();
+    const isDisable = disableArray.some(item => item === Number(newValue));
+    const { onChange, format, value } = this.props;
+    if (onChange) {
+      onChange(value || "0", format);
+    }
   };
 
   // 获取禁止选择的时间段
@@ -107,14 +99,11 @@ class TimeInput extends PureComponent<Props, State> {
 
   // Tag 点击事件
   tagOnClick = time => {
-    // this.setState({ value: time }, () => {
-    //   //  const { value } = this.state;
-    //   const { onChange, format } = this.props;
-    //   if (onChange) {
-    //     //  onChange(value || '00', format);
-    //   }
-    //   this.onFocus();
-    // });
+    const { onChange, format, value } = this.props;
+    if (onChange) {
+      onChange(value || "00", format);
+    }
+    this.onFocus();
   };
 
   // Popover 显示隐藏回调
@@ -162,7 +151,7 @@ class TimeInput extends PureComponent<Props, State> {
         <InputWarp>
           <Input
             ref={this.inputEle}
-            //   value={value}
+            value={value}
             onChange={this.handleChange}
             onFocus={this.onFocus}
             onPressEnter={this.onPressEnter}

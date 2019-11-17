@@ -142,7 +142,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
     const { showTime } = this.props;
-    const { value } = this.state;
+    const { value, currentDate } = this.state;
 
     if (showTime) {
       const props = this.timePickerProps(showTime, value);
@@ -152,15 +152,32 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
             {...props}
             timePickerOnOpenChange={this.timePickOnOpenChange}
             datePickerOnOpenChange={this.onOpenChange}
-            value={value}
+            timeOnChange={this.timeOnChange}
+            value={value || currentDate}
           />
-          <Button size="small" type="primary">
+          <Button size="small" type="primary" onClick={this.pickerConfirm}>
             确定
           </Button>
         </RenderTimeWarp>
       );
     }
     return null;
+  };
+
+  // 时间组件 数值变化回调
+  timeOnChange = time => {
+    const { onChange } = this.props;
+    console.log(time);
+    if (onChange) {
+      onChange(time);
+    } else {
+      this.setState({ value: time.valueOf() });
+    }
+  };
+
+  // 组件确认按钮回调
+  pickerConfirm = () => {
+    this.setState({ dateLayer: false });
   };
 
   // 根据传递 showTime Props 获得 timePicker的Props
@@ -183,19 +200,11 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (this.timeLayer) {
       return;
     }
-    const { value } = this.state;
-    const { showTime } = this.props;
 
-    if (status) {
-      this.setState({
-        dateLayer: status
-        //    ...(!value ? { defaultDate: moment(new Date()) } : {})
-      });
-    } else {
-      this.setState({
-        dateLayer: status
-      });
-    }
+    this.setState({
+      dateLayer: status,
+      currentDate: moment()
+    });
   };
 
   // 时间组件 面板回调

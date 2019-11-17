@@ -41,8 +41,6 @@ class PopoverRender extends PureComponent<Props, State> {
 
     const chunkRownum = chunk(rownum, 5);
 
-    console.log(chunkRownum);
-
     return (
       <Warp>
         {chunkRownum.map((item: any, index) => (

@@ -18,6 +18,7 @@ interface Props {
   secondStep?: number;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
+  timeOnChange: (time) => void;
 }
 
 interface State {
@@ -92,33 +93,28 @@ class TimePicker extends PureComponent<Props, State> {
     timeStr:string
     format:string */
   handleOnChange = (timeStr, format) => {
-    //  const { value } = this.state;
-    //  const newValue = this.timeChangeSetTime(format, value, timeStr);
-    // this.setState(
-    //   {
-    //     value: newValue,
-    //   },
-    //   () => {
-    //     const { timeOnChange } = this.props;
-    //     if (timeOnChange) {
-    //       timeOnChange(newValue);
-    //     }
-    //   }
-    // );
+    const { value } = this.state;
+    const newValue = this.timeChangeSetTime(format, value, timeStr);
+    const { timeOnChange } = this.props;
+    if (timeOnChange) {
+      timeOnChange(newValue);
+    } else {
+      this.setState({ value: newValue });
+    }
   };
 
   // 设置时间 返回时间对象
   timeChangeSetTime = (format, time, timeStr) => {
-    //   switch (format) {
-    //     case HOUR:
-    //       return time.hour(timeStr);
-    //     case MINUTE:
-    //       return time.minute(timeStr);
-    //     case SEC:
-    //       return time.second(timeStr);
-    //     default:
-    //       return time;
-    //   }
+    switch (format) {
+      case HOUR:
+        return time.hour(timeStr);
+      case MINUTE:
+        return time.minute(timeStr);
+      case SEC:
+        return time.second(timeStr);
+      default:
+        return time;
+    }
   };
 
   // 返回分隔符号
@@ -148,6 +144,7 @@ class TimePicker extends PureComponent<Props, State> {
             <TimeInput
               format={item}
               {...this.formatStep(item)}
+              onChange={this.handleOnChange}
               timePickerOnOpenChange={timePickerOnOpenChange}
               datePickerOnOpenChange={datePickerOnOpenChange}
             />
