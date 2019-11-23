@@ -16,9 +16,12 @@ interface Props {
   hourStep?: number;
   minuteStep?: number;
   secondStep?: number;
+  value?: string | number | Moment | Date;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
   timeOnChange: (time) => void;
+  disabledHours?: () => Array<number>;
+  disabledMinutes?: (hour?: number) => Array<number>;
 }
 
 interface State {
@@ -51,7 +54,13 @@ class TimePicker extends PureComponent<Props, State> {
 
   // 根据 format获得时间间隔 最大值
   formatStep = memoize(format => {
-    const { hourStep = 1, minuteStep = 5, secondStep = 10 } = this.props;
+    const {
+      hourStep = 1,
+      minuteStep = 5,
+      secondStep = 10,
+      disabledHours,
+      disabledMinutes
+    } = this.props;
 
     const { value } = this.state;
     const hour = value.hour();
@@ -62,15 +71,15 @@ class TimePicker extends PureComponent<Props, State> {
         return {
           step: hourStep,
           max: 24,
-          value: fillTen(hour)
-          //        disabledTime: disabledHours
+          value: fillTen(hour),
+          disabledTime: disabledHours
         };
       case MINUTE: // 为分钟的input框的值
         return {
           step: minuteStep,
           max: 60,
           value: fillTen(minute),
-          //      disabledTime: disabledMinutes,
+          disabledTime: disabledMinutes,
           hour
         };
       case SEC: // 为秒的input框的值

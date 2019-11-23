@@ -5,6 +5,7 @@ import { memoize } from "lodash";
 import moment from "moment";
 import TimePicker from "../TimePicker";
 // import { transformMoment, transformTimeStamp } from "../utils";
+import { matchTimeFormat } from "../utils/matchTimeFormat";
 
 // 声明文件
 import { Moment } from "moment/moment.d";
@@ -32,15 +33,17 @@ export interface SingleDatePickerProps {
   selectTodayAfter?: boolean;
   showTime?: boolean;
   valueStatus?: ValueStatus;
+  defaultPickerValue?: Moment;
+  showToday?: boolean;
+  valueType?: ValueType;
+  value?: string | number | Moment | Date;
+  onChange?: (value?: PickerValue, ValueStatus?) => void;
   disabledDate?: (
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
   ) => boolean;
-  valueType?: ValueType;
-  onChange?: (value?: PickerValue, ValueStatus?) => void;
-  defaultPickerValue?: Moment;
-  showToday?: boolean;
-  value?: string | number | Moment | Date;
+  disabledHours?: () => Array<number>;
+  disabledMinutes?: (hour: number) => Array<number>;
 }
 
 // 声明组件State类型
@@ -141,15 +144,19 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
-    const { showTime } = this.props;
-    const { value, currentDate } = this.state;
+    const { format, disabledHours, disabledMinutes } = this.props;
 
-    if (showTime) {
-      const props = this.timePickerProps(showTime, value);
+    const timeFormat = this.matchTimeFormat(format);
+
+    if (timeFormat) {
+      const { value, currentDate } = this.state;
+
       return (
         <RenderTimeWarp>
           <TimePicker
-            {...props}
+            format={timeFormat}
+            disabledHours={disabledHours}
+            disabledMinutes={disabledMinutes}
             timePickerOnOpenChange={this.timePickOnOpenChange}
             datePickerOnOpenChange={this.onOpenChange}
             timeOnChange={this.timeOnChange}
@@ -167,7 +174,6 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 时间组件 数值变化回调
   timeOnChange = time => {
     const { onChange } = this.props;
-    console.log(time);
     if (onChange) {
       onChange(time);
     } else {
@@ -180,27 +186,11 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     this.setState({ dateLayer: false });
   };
 
-  // 根据传递 showTime Props 获得 timePicker的Props
-  timePickerProps = memoize((showTime, value) => {
-    if (showTime === "object") {
-      return {
-        value,
-        format: "HH:mm:ss",
-        ...showTime
-      };
-    }
-    return {
-      value,
-      format: "HH:mm:ss"
-    };
-  });
-
   // 文档写的是 显示面板回调  但是貌似是 获取焦点和失去焦点回调
   onOpenChange = (status: boolean) => {
     if (this.timeLayer) {
       return;
     }
-
     this.setState({
       dateLayer: status,
       currentDate: moment()
@@ -212,12 +202,22 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     this.timeLayer = status;
   };
 
+  // 判断format 是否带有 时间选项
+  matchTimeFormat = memoize((format: string) => {
+    const match = matchTimeFormat(format);
+    if (match && match[0]) {
+      return match[0];
+    }
+    return null;
+  });
+
   render() {
     const { value, dateLayer } = this.state;
-    const { defaultPickerValue, showToday } = this.props;
+    const { defaultPickerValue, showToday, format } = this.props;
 
     return (
       <PackDataPick
+        format={format}
         value={this.transformValue(value)}
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}

@@ -49,7 +49,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
     };
   }
 
@@ -58,7 +58,7 @@ class RangePicker extends Component<Props, State> {
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
     selectTodayAfter: true,
-    showToday: true,
+    showToday: true
   };
 
   static getDerivedStateFromProps(props) {
@@ -68,12 +68,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End],
-        },
+          [ValueStatus.End]: value[ValueStatus.End]
+        }
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
     };
   }
 
@@ -129,16 +129,54 @@ class RangePicker extends Component<Props, State> {
     if (onChange) {
       onChange({
         ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {}),
+        ...(valueStatus ? { [valueStatus]: value } : {})
       });
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {}),
-        },
+          ...(valueStatus ? { [valueStatus]: value } : {})
+        }
       });
     }
+  };
+
+  // 开始时间 禁止 选择的小时和分钟  如果有 selectedHour 代表是 选中的分钟
+  startDisabledTime = (selectedHour?: number): Array<number> => {
+    const { time } = this.state;
+    const { endTime, startTime } = time;
+    if (!endTime) {
+      return !selectedHour ? [...SENIORPERSON] : [];
+    }
+    const hour = moment(endTime).hour();
+    // 代表是 小时
+    const endTimeStamp = (endTime
+      ? moment(endTime)
+      : this.timeDefaultPickerValue("endTime")
+    )
+      .startOf("day")
+      .valueOf();
+    const startTimeStamp = moment(startTime)
+      .startOf("day")
+      .valueOf();
+    if (!selectedHour) {
+      return [...this.createArray(hour + 1, 24), ...SENIORPERSON];
+    }
+    const minute = moment(endTime).minute();
+    if (selectedHour === hour && endTimeStamp === startTimeStamp) {
+      return [...this.createArray(minute + 1, 60)];
+    }
+    return [];
+  };
+
+  // 生成 对应数组
+  createArray = (start: number, end: number): number[] => {
+    const array: number[] = [];
+    const len = end;
+    for (let i = start; i < len; i++) {
+      array.push(i);
+    }
+    return array;
   };
 
   render() {

@@ -30,7 +30,7 @@ class DatePickerDemo extends PureComponent<Props, State> {
             <Col span={8}>
               <Form.Item label="单个时间(带时间)">
                 {getFieldDecorator("singleDateTime")(
-                  <SingleDatePicker showTime />
+                  <SingleDatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 )}
               </Form.Item>
             </Col>
