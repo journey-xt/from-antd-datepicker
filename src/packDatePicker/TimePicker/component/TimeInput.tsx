@@ -2,6 +2,7 @@ import React, { PureComponent, RefObject } from "react";
 import styled from "styled-components";
 import { Input, Popover } from "antd";
 import PopoverRender from "./PopoverRender";
+import { HOUR, MINUTE, SEC } from "../../constant";
 import { fillTen } from "../../utils";
 
 const InputWarp = styled.div`
@@ -12,17 +13,23 @@ const InputWarp = styled.div`
   }
 `;
 
+interface DisabledTime {
+  (hour: number, minute: number): Array<number>;
+  (hour: number): Array<number>;
+  (): Array<number>;
+}
+
 interface Props {
   value: string;
   format: string;
   max: number;
   step: number;
-  hour?: number;
-  minute?: number;
+  hour: number;
+  minute: number;
   onChange?: (value: string, format: string) => void;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
-  // disabledTime: Function;
+  disabledTime: DisabledTime;
 }
 
 interface State {
@@ -65,11 +72,19 @@ class TimeInput extends PureComponent<Props, State> {
 
   // 获取禁止选择的时间段
   getDisabled = () => {
-    // const { disabledTime } = this.props;
-    //  const { hour, minute } = this.props;
-    // if (disabledTime && typeof disabledTime === "function") {
-    //   return disabledTime(hour || hour === 0 ? hour : minute, minute);
-    // }
+    const { disabledTime, hour, minute, format } = this.props;
+    if (disabledTime) {
+      switch (format) {
+        case HOUR:
+          return disabledTime();
+        case MINUTE:
+          return disabledTime(hour);
+        case SEC:
+          return disabledTime(hour, minute);
+        default:
+          return disabledTime();
+      }
+    }
     return [];
   };
 

@@ -21,7 +21,7 @@ interface Props {
   datePickerOnOpenChange: (status: boolean) => void;
   timeOnChange: (time) => void;
   disabledHours?: () => Array<number>;
-  disabledMinutes?: (hour?: number) => Array<number>;
+  disabledMinutes?: (hour: number) => Array<number>;
 }
 
 interface State {
@@ -72,7 +72,9 @@ class TimePicker extends PureComponent<Props, State> {
           step: hourStep,
           max: 24,
           value: fillTen(hour),
-          disabledTime: disabledHours
+          disabledTime: disabledHours,
+          hour,
+          minute
         };
       case MINUTE: // 为分钟的input框的值
         return {
@@ -80,7 +82,8 @@ class TimePicker extends PureComponent<Props, State> {
           max: 60,
           value: fillTen(minute),
           disabledTime: disabledMinutes,
-          hour
+          hour,
+          minute
         };
       case SEC: // 为秒的input框的值
         return {

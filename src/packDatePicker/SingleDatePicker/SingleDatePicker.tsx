@@ -42,8 +42,8 @@ export interface SingleDatePickerProps {
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
   ) => boolean;
-  disabledHours?: () => Array<number>;
-  disabledMinutes?: (hour: number) => Array<number>;
+  disabledHours?: (valueType?: ValueType) => Array<number>;
+  disabledMinutes?: (hour: number, valueType?: ValueType) => Array<number>;
 }
 
 // 声明组件State类型
@@ -141,10 +141,29 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     }
   };
 
+  // 禁用小时回调
+  disabledHours = () => {
+    const { disabledHours, valueType } = this.props;
+    if (disabledHours) {
+      return disabledHours(valueType);
+    }
+    return [];
+  };
+
+  // 禁用分钟回调
+  disabledMinutes = (hour: number) => {
+    const { disabledMinutes, valueType } = this.props;
+
+    if (disabledMinutes) {
+      return disabledMinutes(hour, valueType);
+    }
+    return [];
+  };
+
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
-    const { format, disabledHours, disabledMinutes } = this.props;
+    const { format } = this.props;
 
     const timeFormat = this.matchTimeFormat(format);
 
@@ -155,8 +174,8 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         <RenderTimeWarp>
           <TimePicker
             format={timeFormat}
-            disabledHours={disabledHours}
-            disabledMinutes={disabledMinutes}
+            disabledHours={this.disabledHours}
+            disabledMinutes={this.disabledMinutes}
             timePickerOnOpenChange={this.timePickOnOpenChange}
             datePickerOnOpenChange={this.onOpenChange}
             timeOnChange={this.timeOnChange}
