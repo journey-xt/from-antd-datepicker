@@ -8,13 +8,18 @@ const PackLayoutTag = styled(Tag.CheckableTag)<{ disabled: boolean }>`
   cursor: ${props => (props.disabled ? "not-allowed" : "pointer")}!important;
 `;
 
-type Props = {
-  onChange: Function;
-  tags: Object;
+interface ITag {
+  value: string;
+  disabled: boolean;
+}
+
+interface Props {
+  onChange: (tag: string, checked: boolean) => void;
+  tags: ITag;
   checked: boolean;
   children: string;
   disabled: boolean;
-};
+}
 
 class PackTag extends PureComponent<Props> {
   constructor(props) {
@@ -26,7 +31,7 @@ class PackTag extends PureComponent<Props> {
   handleOnChange = checked => {
     const { onChange, tags, disabled } = this.props;
     if (onChange && !disabled) {
-      onChange((tags as any).value, checked);
+      onChange(tags.value, checked);
     }
   };
 

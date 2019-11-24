@@ -5,7 +5,7 @@ import { memoize } from "lodash";
 import TimeInput from "./component/TimeInput";
 // import { TimeFormat } from "./index.d";
 import { TIMEFORMAT, HOUR, MINUTE, SEC, HMS } from "../constant";
-import { matchTimeFormat, fillTen } from "../utils";
+import { matchTimeFormat, fillTen, transformMoment } from "../utils";
 
 const Warp = styled.div`
   padding: 5px 0;
@@ -39,8 +39,17 @@ class TimePicker extends PureComponent<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      value: moment(new Date())
+      value: props.value
     };
+  }
+
+  static getDerivedStateFromProps(props) {
+    const { value } = props;
+
+    if (value) {
+      return { value: transformMoment(value) };
+    }
+    return { value: undefined };
   }
 
   // 根据format渲染文字
@@ -53,7 +62,7 @@ class TimePicker extends PureComponent<Props, State> {
   };
 
   // 根据 format获得时间间隔 最大值
-  formatStep = memoize(format => {
+  formatStep = format => {
     const {
       hourStep = 1,
       minuteStep = 5,
@@ -63,19 +72,12 @@ class TimePicker extends PureComponent<Props, State> {
     } = this.props;
 
     const { value } = this.state;
+
     const hour = value.hour();
     const minute = value.minute();
     const second = value.second();
+
     switch (format) {
-      case HOUR: // 为小时的input框的值
-        return {
-          step: hourStep,
-          max: 24,
-          value: fillTen(hour),
-          disabledTime: disabledHours,
-          hour,
-          minute
-        };
       case MINUTE: // 为分钟的input框的值
         return {
           step: minuteStep,
@@ -90,21 +92,29 @@ class TimePicker extends PureComponent<Props, State> {
           step: secondStep,
           max: 60,
           value: fillTen(second),
-          //    disabledTime: disabledSeconds,
+          disabledTime: disabledMinutes,
           hour,
           minute
         };
+      case HOUR: // 为小时的input框的值
       default:
         // 默认为  小时
-        return { step: hourStep, max: 24, value: fillTen(hour) };
+        return {
+          step: hourStep,
+          max: 24,
+          value: fillTen(hour),
+          disabledTime: disabledHours,
+          hour,
+          minute
+        };
     }
-  });
+  };
 
   /* 单一一项 数值变化
     @params
     timeStr:string
     format:string */
-  handleOnChange = (timeStr, format) => {
+  handleOnChange = (timeStr: string, format) => {
     const { value } = this.state;
     const newValue = this.timeChangeSetTime(format, value, timeStr);
     const { timeOnChange } = this.props;
@@ -142,7 +152,8 @@ class TimePicker extends PureComponent<Props, State> {
     const {
       format,
       timePickerOnOpenChange,
-      datePickerOnOpenChange
+      datePickerOnOpenChange,
+      value
     } = this.props;
 
     const splitSymbol = this.splitSymbol(format);

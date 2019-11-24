@@ -10,6 +10,8 @@ import { RangePickerValue } from "./typeing";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
 
+import { SENIORPERSON } from "../constant";
+
 const LayoutCol = styled(Col)`
   position: relative;
 `;
@@ -143,26 +145,23 @@ class RangePicker extends Component<Props, State> {
 
   // 开始时间 禁止 选择的小时和分钟  如果有 selectedHour 代表是 选中的分钟
   startDisabledTime = (selectedHour?: number): Array<number> => {
-    const { time } = this.state;
-    const { endTime, startTime } = time;
-    if (!endTime) {
+    const { value } = this.state;
+    const { end, start } = value;
+    if (!end) {
       return !selectedHour ? [...SENIORPERSON] : [];
     }
-    const hour = moment(endTime).hour();
+    const hour = moment(end).hour();
     // 代表是 小时
-    const endTimeStamp = (endTime
-      ? moment(endTime)
-      : this.timeDefaultPickerValue("endTime")
-    )
+    const endTimeStamp = (end ? moment(end) : moment(end)) // this.timeDefaultPickerValue("endTime")
       .startOf("day")
       .valueOf();
-    const startTimeStamp = moment(startTime)
+    const startTimeStamp = moment(start)
       .startOf("day")
       .valueOf();
     if (!selectedHour) {
       return [...this.createArray(hour + 1, 24), ...SENIORPERSON];
     }
-    const minute = moment(endTime).minute();
+    const minute = moment(end).minute();
     if (selectedHour === hour && endTimeStamp === startTimeStamp) {
       return [...this.createArray(minute + 1, 60)];
     }

@@ -16,7 +16,7 @@ const RowTagWarp = styled.div`
 
 interface Props {
   onChange: (tag, checked) => void;
-  rownum: any;
+  rownum: Array<{ value: string; disabled: boolean }>;
   value: any;
 }
 
@@ -29,7 +29,7 @@ class PopoverRender extends PureComponent<Props, State> {
   }
 
   // 点击 具体时间回调
-  handleOnChange = (tag, checked) => {
+  handleOnChange = (tag: string, checked: boolean) => {
     const { onChange } = this.props;
     if (onChange) {
       onChange(tag, checked);
@@ -43,7 +43,7 @@ class PopoverRender extends PureComponent<Props, State> {
 
     return (
       <Warp>
-        {chunkRownum.map((item: any, index) => (
+        {chunkRownum.map((item, index) => (
           <RowTagWarp key={index}>
             {item.map(tag => (
               <PackTag

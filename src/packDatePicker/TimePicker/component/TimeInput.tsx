@@ -29,7 +29,7 @@ interface Props {
   onChange?: (value: string, format: string) => void;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
-  disabledTime: DisabledTime;
+  disabledTime?: (hour?: number, minute?: number) => Array<number>;
 }
 
 interface State {
@@ -48,10 +48,6 @@ class TimeInput extends PureComponent<Props, State> {
     this.state = {
       visible: false
     };
-  }
-
-  componentDidMount() {
-    // console.log(this.inputEle);
   }
 
   // 输入框变化事件
@@ -89,7 +85,10 @@ class TimeInput extends PureComponent<Props, State> {
   };
 
   // 根据最大值和间隔 计算数值
-  computeTagNumber = (max, step) => {
+  computeTagNumber = (
+    max: number,
+    step: number
+  ): Array<{ value: string; disabled: boolean }> => {
     const disableArray = this.getDisabled();
     const array: Array<{ value: string; disabled: boolean }> = [];
     let i = 0;
@@ -114,9 +113,9 @@ class TimeInput extends PureComponent<Props, State> {
 
   // Tag 点击事件
   tagOnClick = time => {
-    const { onChange, format, value } = this.props;
+    const { onChange, format } = this.props;
     if (onChange) {
-      onChange(value || "00", format);
+      onChange(time || "00", format);
     }
     this.onFocus();
   };

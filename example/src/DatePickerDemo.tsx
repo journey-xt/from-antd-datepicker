@@ -22,23 +22,23 @@ class DatePickerDemo extends PureComponent<Props, State> {
       <Layout style={{ padding: 20 }}>
         <Form>
           <Row gutter={24}>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="单个时间">
                 {getFieldDecorator("singleDate")(<SingleDatePicker />)}
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="单个时间(带时间)">
                 {getFieldDecorator("singleDateTime")(
-                  <SingleDatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+                  <SingleDatePicker format="YYYY-MM-DD HH:mm:ss" />
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="联级时间">
                 {getFieldDecorator("rangeDate")(<RangePicker />)}
               </Form.Item>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       </Layout>
@@ -48,6 +48,6 @@ class DatePickerDemo extends PureComponent<Props, State> {
 
 export default Form.create({
   onValuesChange(props, changedValues, allValues) {
-    console.log(allValues.rangeDate);
+    console.log(allValues);
   }
 })(DatePickerDemo);

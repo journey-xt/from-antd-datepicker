@@ -5,7 +5,7 @@ import { memoize } from "lodash";
 import moment from "moment";
 import TimePicker from "../TimePicker";
 // import { transformMoment, transformTimeStamp } from "../utils";
-import { matchTimeFormat } from "../utils/matchTimeFormat";
+import { matchTimeFormat, transformMoment } from "../utils";
 
 // 声明文件
 import { Moment } from "moment/moment.d";
@@ -29,7 +29,7 @@ const RenderTimeWarp = styled.div`
 
 // 声明组件Props类型
 export interface SingleDatePickerProps {
-  format?: string | string[];
+  format?: string;
   selectTodayAfter?: boolean;
   showTime?: boolean;
   valueStatus?: ValueStatus;
@@ -76,9 +76,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD",
-    valueStatus: ValueStatus.Start,
-    selectTodayAfter: true
+    format: "YYYY-MM-DD"
   };
 
   // 不可选择时间回调
@@ -98,29 +96,25 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     return false;
   };
 
-  // 通过传入的 值 转成moment对象传递给组件
-  transformValue = date => {
-    const transformDate = moment(date);
-    if (date && transformDate.isValid()) {
-      return transformDate;
-    }
-    return undefined;
-  };
-
   // 根据传递回来的 moment对象 取得 开始时间戳 和结束时间戳
   timeStampBack = (date: Moment | null, valueStatus?: ValueStatus) => {
-    const { valueType } = this.props;
-    if (valueType === ValueType.TimeStamp) {
-      switch (valueStatus) {
-        case ValueStatus.Start:
-          return date ? date.startOf("day").valueOf() : undefined;
-        case ValueStatus.End:
-          return date ? date.endOf("day").valueOf() : undefined;
-        default:
-          return date ? date.valueOf() : undefined;
-      }
+    const { valueType, format } = this.props;
+    switch (valueType) {
+      case ValueType.TimeStamp:
+        switch (valueStatus) {
+          case ValueStatus.Start:
+            return date ? date.startOf("day").valueOf() : undefined;
+          case ValueStatus.End:
+            return date ? date.endOf("day").valueOf() : undefined;
+          default:
+            return date ? date.valueOf() : undefined;
+        }
+      case ValueType.TimeString:
+        return date ? date.format(format) : undefined;
+      case ValueType.Moment:
+      default:
+        return date;
     }
-    return undefined;
   };
 
   // 时间变化回调
@@ -163,12 +157,12 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
-    const { format } = this.props;
+    const { format, value } = this.props;
 
     const timeFormat = this.matchTimeFormat(format);
 
     if (timeFormat) {
-      const { value, currentDate } = this.state;
+      const { currentDate } = this.state;
 
       return (
         <RenderTimeWarp>
@@ -192,12 +186,8 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   // 时间组件 数值变化回调
   timeOnChange = time => {
-    const { onChange } = this.props;
-    if (onChange) {
-      onChange(time);
-    } else {
-      this.setState({ value: time.valueOf() });
-    }
+    const { format } = this.props;
+    this.onChange(time, time.format(format));
   };
 
   // 组件确认按钮回调
@@ -237,7 +227,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     return (
       <PackDataPick
         format={format}
-        value={this.transformValue(value)}
+        value={transformMoment(value)}
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}
         disabledDate={this.disabledDate}
