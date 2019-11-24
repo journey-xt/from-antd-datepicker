@@ -12,6 +12,10 @@ import { Moment } from "moment/moment.d";
 import { PickerValue } from "./typeing";
 import { ValueType, ValueStatus } from "./enum";
 
+import "moment/locale/zh-cn";
+
+moment.locale("en");
+
 const PackDataPick = styled(DatePicker)`
   width: 100%;
 `;
