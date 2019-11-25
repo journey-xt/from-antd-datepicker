@@ -51,7 +51,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
     };
   }
 
@@ -59,7 +59,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    showToday: true,
+    showToday: true
   };
 
   static getDerivedStateFromProps(props) {
@@ -69,12 +69,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End],
-        },
+          [ValueStatus.End]: value[ValueStatus.End]
+        }
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
     };
   }
 
@@ -130,14 +130,14 @@ class RangePicker extends Component<Props, State> {
     if (onChange) {
       onChange({
         ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {}),
+        ...(valueStatus ? { [valueStatus]: value } : {})
       });
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {}),
-        },
+          ...(valueStatus ? { [valueStatus]: value } : {})
+        }
       });
     }
   };
@@ -179,8 +179,12 @@ class RangePicker extends Component<Props, State> {
         if (!end) {
           return selectTodayAfter ? [...this.createArray(1, startHour)] : [];
         }
-        const hour = moment(end).hour();
-        return selectTodayAfter ? [...this.createArray(startHour, hour)] : [];
+        const endMonet = moment(end);
+        const endHour = endMonet.hour();
+        const isDay = moment(start).isSame(endMonet, "day");
+        return selectTodayAfter
+          ? [...this.createArray(startHour, isDay ? endHour : 24)]
+          : [];
       case ValueStatus.End:
       default:
         return [];
