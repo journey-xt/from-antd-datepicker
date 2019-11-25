@@ -33,13 +33,13 @@ class TimePicker extends PureComponent<Props, State> {
     hourStep: 1,
     minuteStep: 5,
     secondStep: 10,
-    format: HMS
+    format: HMS,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      value: props.value
+      value: props.value,
     };
   }
 
@@ -68,7 +68,7 @@ class TimePicker extends PureComponent<Props, State> {
       minuteStep = 5,
       secondStep = 10,
       disabledHours,
-      disabledMinutes
+      disabledMinutes,
     } = this.props;
 
     const { value } = this.state;
@@ -85,7 +85,7 @@ class TimePicker extends PureComponent<Props, State> {
           value: fillTen(minute),
           disabledTime: disabledMinutes,
           hour,
-          minute
+          minute,
         };
       case SEC: // 为秒的input框的值
         return {
@@ -94,7 +94,7 @@ class TimePicker extends PureComponent<Props, State> {
           value: fillTen(second),
           disabledTime: disabledMinutes,
           hour,
-          minute
+          minute,
         };
       case HOUR: // 为小时的input框的值
       default:
@@ -105,7 +105,7 @@ class TimePicker extends PureComponent<Props, State> {
           value: fillTen(hour),
           disabledTime: disabledHours,
           hour,
-          minute
+          minute,
         };
     }
   };
@@ -153,12 +153,11 @@ class TimePicker extends PureComponent<Props, State> {
       format,
       timePickerOnOpenChange,
       datePickerOnOpenChange,
-      value
     } = this.props;
 
     const splitSymbol = this.splitSymbol(format);
 
-    const splitFormat = splitSymbol ? format.split(splitSymbol) : [];
+    const splitFormat = format ? format.split(splitSymbol) : [];
 
     return (
       <Warp>

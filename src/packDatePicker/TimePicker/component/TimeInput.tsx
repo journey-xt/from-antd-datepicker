@@ -46,7 +46,7 @@ class TimeInput extends PureComponent<Props, State> {
     this.PopoverTag = false;
     this.inputEle = React.createRef<Input>();
     this.state = {
-      visible: false
+      visible: false,
     };
   }
 
@@ -54,15 +54,19 @@ class TimeInput extends PureComponent<Props, State> {
   handleChange = e => {
     const { max } = this.props;
     const newValue = e.target.value;
-    const valueLen = newValue.length;
-    if (Number.isNaN(newValue) || Number(newValue) > max || valueLen > 2) {
+    if (Number.isNaN(newValue) || Number(newValue) > max) {
       return;
     }
     const disableArray = this.getDisabled();
     const isDisable = disableArray.some(item => item === Number(newValue));
-    const { onChange, format, value } = this.props;
+    if (isDisable) {
+      return;
+    }
+
+    const { onChange, format } = this.props;
+
     if (onChange) {
-      onChange(value || "0", format);
+      onChange(newValue || "0", format);
     }
   };
 
@@ -96,7 +100,7 @@ class TimeInput extends PureComponent<Props, State> {
       /* eslint-disable no-loop-func */
       array.push({
         value: fillTen(i),
-        disabled: disableArray.some(item => i === item)
+        disabled: disableArray.some(item => i === item),
       });
       /* eslint-enable no-loop-func */
       i += step;
@@ -148,7 +152,8 @@ class TimeInput extends PureComponent<Props, State> {
 
     return (
       <Popover
-        trigger="click"
+        trigger="focus"
+        mouseLeaveDelay={0}
         visible={visible}
         onVisibleChange={this.onVisibleChange}
         overlayStyle={{ zIndex: 1050, padding: "12px 4px" }}

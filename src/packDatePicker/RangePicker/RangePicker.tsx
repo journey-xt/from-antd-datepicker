@@ -34,7 +34,7 @@ type Props = {
   ) => boolean;
   selectTodayAfter?: boolean;
   valueStatus?: ValueStatus;
-  format?: string | string[];
+  format?: string;
   valueType?: ValueType;
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
@@ -51,7 +51,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
     };
   }
 
@@ -59,8 +59,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    selectTodayAfter: true,
-    showToday: true
+    showToday: true,
   };
 
   static getDerivedStateFromProps(props) {
@@ -70,12 +69,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End]
-        }
+          [ValueStatus.End]: value[ValueStatus.End],
+        },
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
     };
   }
 
@@ -131,14 +130,14 @@ class RangePicker extends Component<Props, State> {
     if (onChange) {
       onChange({
         ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {})
+        ...(valueStatus ? { [valueStatus]: value } : {}),
       });
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {})
-        }
+          ...(valueStatus ? { [valueStatus]: value } : {}),
+        },
       });
     }
   };
@@ -168,6 +167,26 @@ class RangePicker extends Component<Props, State> {
     return [];
   };
 
+  // 禁用小时
+  disabledHours = (valueStatus?: ValueStatus) => {
+    const { value } = this.state;
+    const { end, start } = value;
+    const { selectTodayAfter } = this.props;
+
+    switch (valueStatus) {
+      case ValueStatus.Start:
+        const startHour = moment(start).hour();
+        if (!end) {
+          return selectTodayAfter ? [...this.createArray(1, startHour)] : [];
+        }
+        const hour = moment(end).hour();
+        return selectTodayAfter ? [...this.createArray(startHour, hour)] : [];
+      case ValueStatus.End:
+      default:
+        return [];
+    }
+  };
+
   // 生成 对应数组
   createArray = (start: number, end: number): number[] => {
     const array: number[] = [];
@@ -182,14 +201,17 @@ class RangePicker extends Component<Props, State> {
     const { value } = this.state;
     const startTime = value[ValueStatus.Start];
     const endTime = value[ValueStatus.End];
-    const { showToday } = this.props;
+    const { showToday, format, selectTodayAfter } = this.props;
     return (
       <Row gutter={24}>
         <LayoutCol span={12}>
           <SingleDatePicker
+            format={format}
             value={startTime}
             valueStatus={ValueStatus.Start}
             disabledDate={this.disabledDate}
+            disabledHours={this.disabledHours}
+            selectTodayAfter={selectTodayAfter}
             onChange={this.onChange}
             showToday={showToday}
             valueType={ValueType.TimeStamp}
@@ -201,7 +223,9 @@ class RangePicker extends Component<Props, State> {
         </LayoutDiv>
         <Col span={12}>
           <SingleDatePicker
+            format={format}
             value={endTime}
+            selectTodayAfter={selectTodayAfter}
             valueStatus={ValueStatus.End}
             disabledDate={this.disabledDate}
             showToday={showToday}

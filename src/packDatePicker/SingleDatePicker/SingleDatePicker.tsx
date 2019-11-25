@@ -36,7 +36,7 @@ export interface SingleDatePickerProps {
   format?: string;
   selectTodayAfter?: boolean;
   showTime?: boolean;
-  valueStatus?: ValueStatus;
+  valueStatus?: ValueStatus; // 在联结选择器中 使用
   defaultPickerValue?: Moment;
   showToday?: boolean;
   valueType?: ValueType;
@@ -46,14 +46,15 @@ export interface SingleDatePickerProps {
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
   ) => boolean;
-  disabledHours?: (valueType?: ValueType) => Array<number>;
-  disabledMinutes?: (hour: number, valueType?: ValueType) => Array<number>;
+  disabledHours?: (valueStatus?: ValueStatus) => Array<number>;
+  disabledMinutes?: (hour: number, valueStatus?: ValueStatus) => Array<number>;
 }
 
 // 声明组件State类型
 type State = {
   currentDate: Moment;
   dateLayer: boolean;
+  timeFormat: string;
   value?: string | number | Moment | Date;
 };
 
@@ -66,21 +67,33 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     this.state = {
       currentDate: moment(), // 当前时间
       value: props.value, // 内部维护 时间组件的值得
-      dateLayer: false
+      dateLayer: false,
+      timeFormat: "",
     };
   }
 
   static getDerivedStateFromProps(props) {
-    const { value } = props;
+    const { value, format } = props;
+
+    const timeFormatMatch = matchTimeFormat(format);
+
     if (value) {
-      return { value };
+      return {
+        value,
+        currentDate: moment(),
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+      };
     }
-    return { value: undefined };
+    return {
+      value: undefined,
+      currentDate: moment(),
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+    };
   }
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD"
+    format: "YYYY-MM-DD",
   };
 
   // 不可选择时间回调
@@ -124,6 +137,11 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 时间变化回调
   onChange = (date: Moment | null, dateString?: string) => {
     const { valueType, valueStatus, onChange } = this.props;
+    const { timeFormat } = this.state;
+    // 解决 date 组件 隐藏
+    if (timeFormat) {
+      this.setState({ dateLayer: true });
+    }
     if (onChange) {
       switch (valueType) {
         case ValueType.TimeStamp:
@@ -141,19 +159,19 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   // 禁用小时回调
   disabledHours = () => {
-    const { disabledHours, valueType } = this.props;
+    const { disabledHours, valueStatus } = this.props;
     if (disabledHours) {
-      return disabledHours(valueType);
+      return disabledHours(valueStatus);
     }
     return [];
   };
 
   // 禁用分钟回调
   disabledMinutes = (hour: number) => {
-    const { disabledMinutes, valueType } = this.props;
+    const { disabledMinutes, valueStatus } = this.props;
 
     if (disabledMinutes) {
-      return disabledMinutes(hour, valueType);
+      return disabledMinutes(hour, valueStatus);
     }
     return [];
   };
@@ -161,13 +179,12 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
-    const { format, value } = this.props;
+    const { value } = this.props;
 
-    const timeFormat = this.matchTimeFormat(format);
+    const { timeFormat } = this.state;
 
     if (timeFormat) {
       const { currentDate } = this.state;
-
       return (
         <RenderTimeWarp>
           <TimePicker
@@ -204,25 +221,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (this.timeLayer) {
       return;
     }
-    this.setState({
-      dateLayer: status,
-      currentDate: moment()
-    });
+    this.setState({ dateLayer: status });
   };
 
   // 时间组件 面板回调
   timePickOnOpenChange = status => {
     this.timeLayer = status;
   };
-
-  // 判断format 是否带有 时间选项
-  matchTimeFormat = memoize((format: string) => {
-    const match = matchTimeFormat(format);
-    if (match && match[0]) {
-      return match[0];
-    }
-    return null;
-  });
 
   render() {
     const { value, dateLayer } = this.state;

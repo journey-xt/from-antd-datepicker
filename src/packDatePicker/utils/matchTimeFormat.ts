@@ -1,8 +1,10 @@
 import { pattern } from "../tools/regex";
+import { memoize } from "lodash";
 
-const matchTimeFormat = (regexp: string) => {
-  const timeFormat = regexp.match(pattern.TimeFormat);
-  return timeFormat;
-};
+const matchTimeFormat = memoize((regexp: string) => {
+  const match = regexp.match(pattern.TimeFormat);
+
+  return match;
+});
 
 export { matchTimeFormat };
