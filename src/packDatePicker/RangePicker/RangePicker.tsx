@@ -56,7 +56,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
     };
   }
 
@@ -64,7 +64,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    showToday: true,
+    showToday: true
   };
 
   static getDerivedStateFromProps(props) {
@@ -74,12 +74,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End],
-        },
+          [ValueStatus.End]: value[ValueStatus.End]
+        }
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
     };
   }
 
@@ -135,82 +135,109 @@ class RangePicker extends Component<Props, State> {
     if (onChange) {
       onChange({
         ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {}),
+        ...(valueStatus ? { [valueStatus]: value } : {})
       });
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {}),
-        },
+          ...(valueStatus ? { [valueStatus]: value } : {})
+        }
       });
     }
   };
 
-  // 开始时间 禁止 选择的小时和分钟  如果有 selectedHour 代表是 选中的分钟
-  startDisabledTime = (selectedHour?: number): Array<number> => {
-    const { value } = this.state;
-    const { end, start } = value;
-    if (!end) {
-      return !selectedHour ? [...SENIORPERSON] : [];
-    }
-    const hour = moment(end).hour();
-    // 代表是 小时
-    const endTimeStamp = (end ? moment(end) : moment(end)) // this.timeDefaultPickerValue("endTime")
-      .startOf("day")
-      .valueOf();
-    const startTimeStamp = moment(start)
-      .startOf("day")
-      .valueOf();
-    if (!selectedHour) {
-      return [...this.createArray(hour + 1, 24), ...SENIORPERSON];
-    }
-    const minute = moment(end).minute();
-    if (selectedHour === hour && endTimeStamp === startTimeStamp) {
-      return [...this.createArray(minute + 1, 60)];
-    }
-    return [];
-  };
-
   // 禁用小时
-  disabledHours = (valueStatus?: ValueStatus) => {
+  disabledHours = (currentDate, valueStatus?: ValueStatus) => {
     const { value } = this.state;
     const { end, start } = value;
     const { selectTodayAfter } = this.props;
 
     switch (valueStatus) {
       case ValueStatus.Start:
-        const startHour = moment(start).hour();
+        const startHour = start ? moment(start).hour() : currentDate.hour();
         if (!end) {
           return selectTodayAfter ? [...this.createArray(0, startHour)] : [];
         }
         const endMonet = moment(end);
         const statusStartendHour = endMonet.hour();
-        const startIsEnd = moment(start).isSame(endMonet, "day");
+        const startIsEnd = (start ? moment(start) : currentDate).isSame(
+          endMonet,
+          "day"
+        );
         return selectTodayAfter
           ? [
               ...this.createArray(0, startHour),
               ...(startIsEnd
                 ? this.createArray(statusStartendHour + 1, 24)
-                : []),
+                : [])
             ]
           : [
               ...(startIsEnd
                 ? this.createArray(statusStartendHour + 1, 24)
-                : []),
+                : [])
             ];
       case ValueStatus.End:
+        const currentHour = currentDate.hour();
+        if (!start) {
+          return selectTodayAfter ? [...this.createArray(0, currentHour)] : [];
+        }
         const startMonet = moment(start);
         const statusEndStartHour = startMonet.hour();
-        if (!start) {
-          return selectTodayAfter
-            ? [...this.createArray(0, statusEndStartHour)]
-            : [];
-        }
         const endIsStart = moment(end).isSame(startMonet, "day");
         return selectTodayAfter
-          ? [...this.createArray(0, statusEndStartHour)]
-          : [...this.createArray(0, statusEndStartHour)];
+          ? [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])]
+          : [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])];
+      default:
+        return [];
+    }
+  };
+
+  // 禁用分钟
+  disabledMinutes = (
+    currentDate: Moment,
+    hour: number,
+    valueStatus?: ValueStatus
+  ) => {
+    const { value } = this.state;
+    const { end, start } = value;
+    const { selectTodayAfter } = this.props;
+
+    switch (valueStatus) {
+      case ValueStatus.Start:
+        const startHour = start ? moment(start).hour() : currentDate.hour();
+        if (!end) {
+          return selectTodayAfter ? [...this.createArray(0, startHour)] : [];
+        }
+        const endMonet = moment(end);
+        const statusStartendHour = endMonet.hour();
+        const startIsEnd = (start ? moment(start) : currentDate).isSame(
+          endMonet,
+          "day"
+        );
+        return selectTodayAfter
+          ? [
+              ...this.createArray(0, startHour),
+              ...(startIsEnd
+                ? this.createArray(statusStartendHour + 1, 24)
+                : [])
+            ]
+          : [
+              ...(startIsEnd
+                ? this.createArray(statusStartendHour + 1, 24)
+                : [])
+            ];
+      case ValueStatus.End:
+        const currentHour = currentDate.hour();
+        if (!start) {
+          return selectTodayAfter ? [...this.createArray(0, currentHour)] : [];
+        }
+        const startMonet = moment(start);
+        const statusEndStartHour = startMonet.hour();
+        const endIsStart = moment(end).isSame(startMonet, "day");
+        return selectTodayAfter
+          ? [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])]
+          : [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])];
       default:
         return [];
     }
@@ -253,6 +280,7 @@ class RangePicker extends Component<Props, State> {
             valueStatus={ValueStatus.Start}
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
+            disabledMinutes={this.disabledMinutes}
             selectTodayAfter={selectTodayAfter}
             onChange={this.onChange}
             defaultPickerValue={endTime ? moment(endTime) : undefined}
@@ -271,6 +299,7 @@ class RangePicker extends Component<Props, State> {
             valueStatus={ValueStatus.End}
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
+            disabledMinutes={this.disabledMinutes}
             onChange={this.onChange}
             defaultPickerValue={startTime ? moment(startTime) : undefined}
           />

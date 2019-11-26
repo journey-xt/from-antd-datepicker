@@ -46,8 +46,15 @@ export interface SingleDatePickerProps {
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
   ) => boolean;
-  disabledHours?: (valueStatus?: ValueStatus) => Array<number>;
-  disabledMinutes?: (hour: number, valueStatus?: ValueStatus) => Array<number>;
+  disabledHours?: (
+    currentDate: Moment,
+    valueStatus?: ValueStatus
+  ) => Array<number>;
+  disabledMinutes?: (
+    currentDate: Moment,
+    hour: number,
+    valueStatus?: ValueStatus
+  ) => Array<number>;
 }
 
 // 声明组件State类型
@@ -68,7 +75,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       currentDate: moment(), // 当前时间
       value: props.value, // 内部维护 时间组件的值得
       dateLayer: false,
-      timeFormat: "",
+      timeFormat: ""
     };
   }
 
@@ -81,18 +88,18 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (value) {
       return {
         value,
-        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
       };
     }
     return {
       value: stateValue || undefined,
-      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
     };
   }
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD",
+    format: "YYYY-MM-DD"
   };
 
   // 不可选择时间回调
@@ -159,8 +166,9 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 禁用小时回调
   disabledHours = () => {
     const { disabledHours, valueStatus } = this.props;
+    const { currentDate } = this.state;
     if (disabledHours) {
-      return disabledHours(valueStatus);
+      return disabledHours(currentDate, valueStatus);
     }
     return [];
   };
@@ -168,9 +176,9 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 禁用分钟回调
   disabledMinutes = (hour: number) => {
     const { disabledMinutes, valueStatus } = this.props;
-
+    const { currentDate } = this.state;
     if (disabledMinutes) {
-      return disabledMinutes(hour, valueStatus);
+      return disabledMinutes(currentDate, hour, valueStatus);
     }
     return [];
   };
