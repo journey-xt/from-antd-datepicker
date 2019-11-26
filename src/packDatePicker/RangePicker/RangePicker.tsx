@@ -7,10 +7,15 @@ import { Moment } from "moment/moment.d";
 import { PickerValue } from "../SingleDatePicker/typeing";
 import { ValueType, ValueStatus } from "../SingleDatePicker/enum";
 import { RangePickerValue } from "./typeing";
+import { transformMoment } from "../utils";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
 
 import { SENIORPERSON } from "../constant";
+
+import "moment/locale/zh-cn";
+
+moment.locale("en");
 
 const LayoutCol = styled(Col)`
   position: relative;
@@ -51,7 +56,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
     };
   }
 
@@ -59,7 +64,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    showToday: true
+    showToday: true,
   };
 
   static getDerivedStateFromProps(props) {
@@ -69,12 +74,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End]
-        }
+          [ValueStatus.End]: value[ValueStatus.End],
+        },
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
     };
   }
 
@@ -130,14 +135,14 @@ class RangePicker extends Component<Props, State> {
     if (onChange) {
       onChange({
         ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {})
+        ...(valueStatus ? { [valueStatus]: value } : {}),
       });
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {})
-        }
+          ...(valueStatus ? { [valueStatus]: value } : {}),
+        },
       });
     }
   };
@@ -177,15 +182,35 @@ class RangePicker extends Component<Props, State> {
       case ValueStatus.Start:
         const startHour = moment(start).hour();
         if (!end) {
-          return selectTodayAfter ? [...this.createArray(1, startHour)] : [];
+          return selectTodayAfter ? [...this.createArray(0, startHour)] : [];
         }
         const endMonet = moment(end);
-        const endHour = endMonet.hour();
-        const isDay = moment(start).isSame(endMonet, "day");
+        const statusStartendHour = endMonet.hour();
+        const startIsEnd = moment(start).isSame(endMonet, "day");
         return selectTodayAfter
-          ? [...this.createArray(startHour, isDay ? endHour : 24)]
-          : [];
+          ? [
+              ...this.createArray(0, startHour),
+              ...(startIsEnd
+                ? this.createArray(statusStartendHour + 1, 24)
+                : []),
+            ]
+          : [
+              ...(startIsEnd
+                ? this.createArray(statusStartendHour + 1, 24)
+                : []),
+            ];
       case ValueStatus.End:
+        const startMonet = moment(start);
+        const statusEndStartHour = startMonet.hour();
+        if (!start) {
+          return selectTodayAfter
+            ? [...this.createArray(0, statusEndStartHour)]
+            : [];
+        }
+        const endIsStart = moment(end).isSame(startMonet, "day");
+        return selectTodayAfter
+          ? [...this.createArray(0, statusEndStartHour)]
+          : [...this.createArray(0, statusEndStartHour)];
       default:
         return [];
     }
@@ -201,25 +226,36 @@ class RangePicker extends Component<Props, State> {
     return array;
   };
 
+  // 结束时间 默认面板日期
+  timeDefaultPickerValue = type => {
+    console.log(1111);
+    const { value } = this.state;
+    if (value[type]) {
+      return moment(value[type]);
+    }
+    return moment(new Date());
+  };
+
   render() {
     const { value } = this.state;
     const startTime = value[ValueStatus.Start];
     const endTime = value[ValueStatus.End];
     const { showToday, format, selectTodayAfter } = this.props;
+
     return (
       <Row gutter={24}>
         <LayoutCol span={12}>
           <SingleDatePicker
             format={format}
             value={startTime}
+            showToday={showToday}
+            valueType={ValueType.Moment}
             valueStatus={ValueStatus.Start}
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
             selectTodayAfter={selectTodayAfter}
             onChange={this.onChange}
-            showToday={showToday}
-            valueType={ValueType.TimeStamp}
-            defaultPickerValue={startTime ? moment(startTime) : undefined}
+            defaultPickerValue={endTime ? moment(endTime) : undefined}
           />
         </LayoutCol>
         <LayoutDiv>
@@ -229,12 +265,13 @@ class RangePicker extends Component<Props, State> {
           <SingleDatePicker
             format={format}
             value={endTime}
+            showToday={showToday}
+            valueType={ValueType.Moment}
             selectTodayAfter={selectTodayAfter}
             valueStatus={ValueStatus.End}
             disabledDate={this.disabledDate}
-            showToday={showToday}
+            disabledHours={this.disabledHours}
             onChange={this.onChange}
-            valueType={ValueType.TimeStamp}
             defaultPickerValue={startTime ? moment(startTime) : undefined}
           />
         </Col>

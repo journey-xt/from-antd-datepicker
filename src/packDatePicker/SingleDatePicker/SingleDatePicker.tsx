@@ -72,21 +72,20 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     };
   }
 
-  static getDerivedStateFromProps(props) {
+  static getDerivedStateFromProps(props, state) {
     const { value, format } = props;
+    const { stateValue } = state;
 
     const timeFormatMatch = matchTimeFormat(format);
 
     if (value) {
       return {
         value,
-        currentDate: moment(),
         timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
       };
     }
     return {
-      value: undefined,
-      currentDate: moment(),
+      value: stateValue || undefined,
       timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
     };
   }
@@ -179,7 +178,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 添加额外的的页脚render
   // 需要选择 时分秒生成module
   renderExtraFooter = () => {
-    const { value } = this.props;
+    const { value, defaultPickerValue } = this.props;
 
     const { timeFormat } = this.state;
 
@@ -194,7 +193,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
             timePickerOnOpenChange={this.timePickOnOpenChange}
             datePickerOnOpenChange={this.onOpenChange}
             timeOnChange={this.timeOnChange}
-            value={value || currentDate}
+            value={value || defaultPickerValue || currentDate}
           />
           <Button size="small" type="primary" onClick={this.pickerConfirm}>
             确定
@@ -221,7 +220,14 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (this.timeLayer) {
       return;
     }
-    this.setState({ dateLayer: status });
+
+    const { value } = this.state;
+
+    if (!value && status) {
+      this.setState({ dateLayer: status, currentDate: moment() });
+    } else {
+      this.setState({ dateLayer: status });
+    }
   };
 
   // 时间组件 面板回调
