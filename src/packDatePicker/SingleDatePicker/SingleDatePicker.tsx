@@ -41,7 +41,7 @@ export interface SingleDatePickerProps {
   showToday?: boolean;
   valueType?: ValueType;
   value?: string | number | Moment | Date;
-  onChange?: (value?: PickerValue, ValueStatus?) => void;
+  onChange?: (value: PickerValue | null, ValueStatus?) => void;
   disabledDate?: (
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
@@ -52,7 +52,10 @@ export interface SingleDatePickerProps {
   ) => Array<number>;
   disabledMinutes?: (
     currentDate: Moment,
-    hour: number,
+    valueStatus?: ValueStatus
+  ) => Array<number>;
+  disabledSeconds?: (
+    currentDate: Moment,
     valueStatus?: ValueStatus
   ) => Array<number>;
 }
@@ -73,9 +76,9 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     this.timeLayer = false;
     this.state = {
       currentDate: moment(), // 当前时间
-      value: props.value, // 内部维护 时间组件的值得
+      value: props.value, // 内部维护 时间组件的值
       dateLayer: false,
-      timeFormat: ""
+      timeFormat: "",
     };
   }
 
@@ -88,18 +91,18 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (value) {
       return {
         value,
-        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
       };
     }
     return {
       value: stateValue || undefined,
-      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
     };
   }
 
   static defaultProps = {
-    valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD"
+    valueType: ValueType.Moment,
+    format: "YYYY-MM-DD",
   };
 
   // 不可选择时间回调
@@ -122,18 +125,22 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 根据传递回来的 moment对象 取得 开始时间戳 和结束时间戳
   timeStampBack = (date: Moment | null, valueStatus?: ValueStatus) => {
     const { valueType, format } = this.props;
+    const { timeFormat } = this.state;
     switch (valueType) {
       case ValueType.TimeStamp:
+        if (timeFormat) {
+          return date ? date.valueOf() : null;
+        }
         switch (valueStatus) {
           case ValueStatus.Start:
-            return date ? date.startOf("day").valueOf() : undefined;
+            return date ? date.startOf("day").valueOf() : null;
           case ValueStatus.End:
-            return date ? date.endOf("day").valueOf() : undefined;
+            return date ? date.endOf("day").valueOf() : null;
           default:
-            return date ? date.valueOf() : undefined;
+            return date ? date.valueOf() : null;
         }
       case ValueType.TimeString:
-        return date ? date.format(format) : undefined;
+        return date ? date.format(format) : null;
       case ValueType.Moment:
       default:
         return date;
@@ -141,7 +148,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   };
 
   // 时间变化回调
-  onChange = (date: Moment | null, dateString?: string) => {
+  onChange = (date: Moment | null, dateString: string) => {
     const { valueType, valueStatus, onChange } = this.props;
     const { timeFormat } = this.state;
     // 解决 date 组件 隐藏
@@ -174,11 +181,21 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   };
 
   // 禁用分钟回调
-  disabledMinutes = (hour: number) => {
+  disabledMinutes = () => {
     const { disabledMinutes, valueStatus } = this.props;
     const { currentDate } = this.state;
     if (disabledMinutes) {
-      return disabledMinutes(currentDate, hour, valueStatus);
+      return disabledMinutes(currentDate, valueStatus);
+    }
+    return [];
+  };
+
+  // 禁用秒回调
+  disabledSeconds = () => {
+    const { disabledSeconds, valueStatus } = this.props;
+    const { currentDate } = this.state;
+    if (disabledSeconds) {
+      return disabledSeconds(currentDate, valueStatus);
     }
     return [];
   };
@@ -198,6 +215,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
             format={timeFormat}
             disabledHours={this.disabledHours}
             disabledMinutes={this.disabledMinutes}
+            disabledSeconds={this.disabledSeconds}
             timePickerOnOpenChange={this.timePickOnOpenChange}
             datePickerOnOpenChange={this.onOpenChange}
             timeOnChange={this.timeOnChange}

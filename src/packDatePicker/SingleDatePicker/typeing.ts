@@ -1,3 +1,3 @@
-import { Moment as StatementMoment } from "moment/moment.d";
+import { Moment } from "moment/moment.d";
 
-export type PickerValue = string | number | StatementMoment | null;
+export type PickerValue = string | number | Moment;

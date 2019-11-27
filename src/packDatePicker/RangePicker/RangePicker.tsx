@@ -7,11 +7,8 @@ import { Moment } from "moment/moment.d";
 import { PickerValue } from "../SingleDatePicker/typeing";
 import { ValueType, ValueStatus } from "../SingleDatePicker/enum";
 import { RangePickerValue } from "./typeing";
-import { transformMoment } from "../utils";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
-
-import { SENIORPERSON } from "../constant";
 
 import "moment/locale/zh-cn";
 
@@ -56,7 +53,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
     };
   }
 
@@ -64,7 +61,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    showToday: true
+    showToday: true,
   };
 
   static getDerivedStateFromProps(props) {
@@ -74,12 +71,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End]
-        }
+          [ValueStatus.End]: value[ValueStatus.End],
+        },
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
     };
   }
 
@@ -129,20 +126,47 @@ class RangePicker extends Component<Props, State> {
   };
 
   //  时间变化回调
-  onChange = (value?: PickerValue, valueStatus?: ValueStatus) => {
+  onChange = (value: PickerValue | null, valueStatus?: ValueStatus) => {
     const { onChange } = this.props;
     const { value: stateValue } = this.state;
+    const { start, end } = stateValue;
     if (onChange) {
-      onChange({
-        ...stateValue,
-        ...(valueStatus ? { [valueStatus]: value } : {})
-      });
+      switch (valueStatus) {
+        case ValueStatus.Start:
+          if (end && value) {
+            onChange({
+              [ValueStatus.Start]: moment(value).isAfter(end) ? end : value,
+              [ValueStatus.End]: end,
+            });
+            return;
+          }
+          onChange({
+            ...stateValue,
+            ...(valueStatus ? { [valueStatus]: value || undefined } : {}),
+          });
+          break;
+        case ValueStatus.End:
+          if (start && value) {
+            onChange({
+              [ValueStatus.Start]: start,
+              [ValueStatus.End]: moment(value).isBefore(start) ? start : value,
+            });
+            return;
+          }
+          onChange({
+            ...stateValue,
+            ...(valueStatus ? { [valueStatus]: value || undefined } : {}),
+          });
+          break;
+        default:
+          onChange({ ...stateValue });
+      }
     } else {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {})
-        }
+          ...(valueStatus ? { [valueStatus]: value } : {}),
+        },
       });
     }
   };
@@ -153,11 +177,18 @@ class RangePicker extends Component<Props, State> {
     const { end, start } = value;
     const { selectTodayAfter } = this.props;
 
+    const currentHour = currentDate.hour();
+
     switch (valueStatus) {
       case ValueStatus.Start:
-        const startHour = start ? moment(start).hour() : currentDate.hour();
+        const isSameStartCurrent = (start ? moment(start) : currentDate).isSame(
+          currentDate,
+          "day"
+        );
         if (!end) {
-          return selectTodayAfter ? [...this.createArray(0, startHour)] : [];
+          return selectTodayAfter && isSameStartCurrent
+            ? [...this.createArray(0, currentHour)]
+            : [];
         }
         const endMonet = moment(end);
         const statusStartendHour = endMonet.hour();
@@ -165,79 +196,158 @@ class RangePicker extends Component<Props, State> {
           endMonet,
           "day"
         );
-        return selectTodayAfter
-          ? [
-              ...this.createArray(0, startHour),
-              ...(startIsEnd
-                ? this.createArray(statusStartendHour + 1, 24)
-                : [])
-            ]
-          : [
-              ...(startIsEnd
-                ? this.createArray(statusStartendHour + 1, 24)
-                : [])
-            ];
+        return [
+          ...(selectTodayAfter ? this.createArray(0, currentHour) : []),
+          ...(startIsEnd ? this.createArray(statusStartendHour + 1, 24) : []),
+        ];
+
       case ValueStatus.End:
-        const currentHour = currentDate.hour();
+        const isSameEndCurrent = (end ? moment(end) : currentDate).isSame(
+          currentDate,
+          "day"
+        );
         if (!start) {
-          return selectTodayAfter ? [...this.createArray(0, currentHour)] : [];
+          return selectTodayAfter && isSameEndCurrent
+            ? [...this.createArray(0, currentHour)]
+            : [];
         }
         const startMonet = moment(start);
         const statusEndStartHour = startMonet.hour();
-        const endIsStart = moment(end).isSame(startMonet, "day");
-        return selectTodayAfter
-          ? [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])]
-          : [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])];
+        const endIsStart = (end ? moment(end) : currentDate).isSame(
+          startMonet,
+          "day"
+        );
+
+        return [
+          ...(selectTodayAfter ? this.createArray(0, currentHour) : []),
+          ...(endIsStart ? [...this.createArray(0, statusEndStartHour)] : []),
+        ];
+
       default:
         return [];
     }
   };
 
   // 禁用分钟
-  disabledMinutes = (
-    currentDate: Moment,
-    hour: number,
-    valueStatus?: ValueStatus
-  ) => {
+  disabledMinutes = (currentDate: Moment, valueStatus?: ValueStatus) => {
     const { value } = this.state;
     const { end, start } = value;
     const { selectTodayAfter } = this.props;
 
+    const currentMinute = currentDate.minute();
+
     switch (valueStatus) {
       case ValueStatus.Start:
-        const startHour = start ? moment(start).hour() : currentDate.hour();
-        if (!end) {
-          return selectTodayAfter ? [...this.createArray(0, startHour)] : [];
-        }
-        const endMonet = moment(end);
-        const statusStartendHour = endMonet.hour();
-        const startIsEnd = (start ? moment(start) : currentDate).isSame(
-          endMonet,
-          "day"
+        const isSameCurrenthour = (start ? moment(start) : currentDate).isSame(
+          currentDate,
+          "hour"
         );
-        return selectTodayAfter
-          ? [
-              ...this.createArray(0, startHour),
-              ...(startIsEnd
-                ? this.createArray(statusStartendHour + 1, 24)
-                : [])
-            ]
-          : [
-              ...(startIsEnd
-                ? this.createArray(statusStartendHour + 1, 24)
-                : [])
-            ];
-      case ValueStatus.End:
-        const currentHour = currentDate.hour();
-        if (!start) {
-          return selectTodayAfter ? [...this.createArray(0, currentHour)] : [];
+
+        if (end) {
+          const endMinute = moment(end).minute();
+          const isSameEndHour = (start ? moment(start) : currentDate).isSame(
+            end,
+            "hour"
+          );
+          return [
+            ...(selectTodayAfter && isSameCurrenthour
+              ? this.createArray(0, currentMinute)
+              : []),
+            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : []),
+          ];
         }
-        const startMonet = moment(start);
-        const statusEndStartHour = startMonet.hour();
-        const endIsStart = moment(end).isSame(startMonet, "day");
-        return selectTodayAfter
-          ? [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])]
-          : [...(endIsStart ? this.createArray(0, statusEndStartHour) : [])];
+        return [
+          ...(selectTodayAfter && isSameCurrenthour
+            ? this.createArray(0, currentMinute)
+            : []),
+        ];
+      case ValueStatus.End:
+        const statusEndisSameCurrentHour = (end
+          ? moment(end)
+          : currentDate
+        ).isSame(currentDate, "hour");
+
+        if (start) {
+          const isSameStartHour = (end ? moment(end) : currentDate).isSame(
+            start,
+            "hour"
+          );
+          const startMinute = moment(start).minute();
+          return [
+            ...(selectTodayAfter && statusEndisSameCurrentHour
+              ? this.createArray(0, currentMinute)
+              : []),
+            ...(isSameStartHour ? this.createArray(0, startMinute) : []),
+          ];
+        }
+        return [
+          ...(selectTodayAfter && statusEndisSameCurrentHour
+            ? this.createArray(0, currentMinute)
+            : []),
+        ];
+
+      default:
+        return [];
+    }
+  };
+
+  // 禁用秒
+  disabledSeconds = (currentDate: Moment, valueStatus?: ValueStatus) => {
+    const { value } = this.state;
+    const { end, start } = value;
+    const { selectTodayAfter } = this.props;
+
+    const currentMinute = currentDate.second();
+
+    switch (valueStatus) {
+      case ValueStatus.Start:
+        const isSameCurrenthour = (start ? moment(start) : currentDate).isSame(
+          currentDate,
+          "minute"
+        );
+
+        if (end) {
+          const endMinute = moment(end).second();
+          const isSameEndHour = (start ? moment(start) : currentDate).isSame(
+            end,
+            "minute"
+          );
+          return [
+            ...(selectTodayAfter && isSameCurrenthour
+              ? this.createArray(0, currentMinute)
+              : []),
+            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : []),
+          ];
+        }
+        return [
+          ...(selectTodayAfter && isSameCurrenthour
+            ? this.createArray(0, currentMinute)
+            : []),
+        ];
+      case ValueStatus.End:
+        const statusEndisSameCurrentHour = (end
+          ? moment(end)
+          : currentDate
+        ).isSame(currentDate, "minute");
+
+        if (start) {
+          const isSameStartHour = (end ? moment(end) : currentDate).isSame(
+            start,
+            "minute"
+          );
+          const startMinute = moment(start).second();
+          return [
+            ...(selectTodayAfter && statusEndisSameCurrentHour
+              ? this.createArray(0, currentMinute)
+              : []),
+            ...(isSameStartHour ? this.createArray(0, startMinute) : []),
+          ];
+        }
+        return [
+          ...(selectTodayAfter && statusEndisSameCurrentHour
+            ? this.createArray(0, currentMinute)
+            : []),
+        ];
       default:
         return [];
     }
@@ -267,7 +377,7 @@ class RangePicker extends Component<Props, State> {
     const { value } = this.state;
     const startTime = value[ValueStatus.Start];
     const endTime = value[ValueStatus.End];
-    const { showToday, format, selectTodayAfter } = this.props;
+    const { showToday, format, selectTodayAfter, valueType } = this.props;
 
     return (
       <Row gutter={24}>
@@ -276,11 +386,12 @@ class RangePicker extends Component<Props, State> {
             format={format}
             value={startTime}
             showToday={showToday}
-            valueType={ValueType.Moment}
+            valueType={valueType}
             valueStatus={ValueStatus.Start}
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
             disabledMinutes={this.disabledMinutes}
+            disabledSeconds={this.disabledSeconds}
             selectTodayAfter={selectTodayAfter}
             onChange={this.onChange}
             defaultPickerValue={endTime ? moment(endTime) : undefined}
@@ -294,12 +405,13 @@ class RangePicker extends Component<Props, State> {
             format={format}
             value={endTime}
             showToday={showToday}
-            valueType={ValueType.Moment}
+            valueType={valueType}
             selectTodayAfter={selectTodayAfter}
             valueStatus={ValueStatus.End}
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
             disabledMinutes={this.disabledMinutes}
+            disabledSeconds={this.disabledSeconds}
             onChange={this.onChange}
             defaultPickerValue={startTime ? moment(startTime) : undefined}
           />

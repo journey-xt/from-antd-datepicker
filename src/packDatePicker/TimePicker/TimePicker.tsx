@@ -21,7 +21,8 @@ interface Props {
   datePickerOnOpenChange: (status: boolean) => void;
   timeOnChange: (time) => void;
   disabledHours?: () => Array<number>;
-  disabledMinutes?: (hour: number) => Array<number>;
+  disabledMinutes?: () => Array<number>;
+  disabledSeconds?: () => Array<number>;
 }
 
 interface State {
@@ -69,6 +70,7 @@ class TimePicker extends PureComponent<Props, State> {
       secondStep = 10,
       disabledHours,
       disabledMinutes,
+      disabledSeconds,
     } = this.props;
 
     const { value } = this.state;
@@ -92,7 +94,7 @@ class TimePicker extends PureComponent<Props, State> {
           step: secondStep,
           max: 60,
           value: fillTen(second),
-          disabledTime: disabledMinutes,
+          disabledTime: disabledSeconds,
           hour,
           minute,
         };
