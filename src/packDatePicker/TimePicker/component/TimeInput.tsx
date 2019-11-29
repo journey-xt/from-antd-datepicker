@@ -7,17 +7,14 @@ import { fillTen } from "../../utils";
 
 const InputWarp = styled.div`
   display: inline-block;
+  min-height: 38px;
   width: 50px;
   & .ant-input {
     padding: 4px 16px;
   }
 `;
 
-interface DisabledTime {
-  (hour: number, minute: number): Array<number>;
-  (hour: number): Array<number>;
-  (): Array<number>;
-}
+const PackPopover = styled(Popover)``;
 
 interface Props {
   value: string;
@@ -29,7 +26,7 @@ interface Props {
   onChange?: (value: string, format: string) => void;
   timePickerOnOpenChange: (status: boolean) => void;
   datePickerOnOpenChange: (status: boolean) => void;
-  disabledTime?: (hour?: number, minute?: number) => Array<number>;
+  disabledTime?: () => Array<number>;
 }
 
 interface State {
@@ -37,13 +34,11 @@ interface State {
 }
 
 class TimeInput extends PureComponent<Props, State> {
-  PopoverTag: boolean;
-
   inputEle: RefObject<Input>;
 
   constructor(props) {
     super(props);
-    this.PopoverTag = false;
+
     this.inputEle = React.createRef<Input>();
     this.state = {
       visible: false,
@@ -74,16 +69,7 @@ class TimeInput extends PureComponent<Props, State> {
   getDisabled = () => {
     const { disabledTime, hour, minute, format } = this.props;
     if (disabledTime) {
-      switch (format) {
-        case HOUR:
-          return disabledTime();
-        case MINUTE:
-          return disabledTime(hour);
-        case SEC:
-          return disabledTime(hour, minute);
-        default:
-          return disabledTime();
-      }
+      return disabledTime();
     }
     return [];
   };
@@ -151,12 +137,15 @@ class TimeInput extends PureComponent<Props, State> {
     const rownum = this.computeTagNumber(max, step);
 
     return (
-      <Popover
-        trigger="focus"
+      <PackPopover
+        trigger="click"
+        mouseEnterDelay={50}
         mouseLeaveDelay={0}
         visible={visible}
+        getPopupContainer={triggerNode => triggerNode}
+        autoAdjustOverflow
         onVisibleChange={this.onVisibleChange}
-        overlayStyle={{ zIndex: 1050, padding: "12px 4px" }}
+        overlayStyle={{ padding: "12px 4px" }}
         content={
           <PopoverRender
             {...reset}
@@ -176,7 +165,7 @@ class TimeInput extends PureComponent<Props, State> {
             onPressEnter={this.onPressEnter}
           />
         </InputWarp>
-      </Popover>
+      </PackPopover>
     );
   }
 }

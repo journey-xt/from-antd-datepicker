@@ -6,6 +6,7 @@ import PackTag from "./PackTag";
 const Warp = styled.div`
   text-align: left;
   user-select: none;
+  width: 182px;
 `;
 
 const RowTagWarp = styled.div`
