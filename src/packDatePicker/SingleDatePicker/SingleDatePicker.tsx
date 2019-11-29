@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { DatePicker, Button } from "antd";
-import { memoize } from "lodash";
 import moment from "moment";
 import TimePicker from "../TimePicker";
 // import { transformMoment, transformTimeStamp } from "../utils";
@@ -11,10 +10,6 @@ import { matchTimeFormat, transformMoment } from "../utils";
 import { Moment } from "moment/moment.d";
 import { PickerValue } from "./typeing";
 import { ValueType, ValueStatus } from "./enum";
-
-import "moment/locale/zh-cn";
-
-moment.locale("en");
 
 const PackDataPick = styled(DatePicker)`
   width: 100%;

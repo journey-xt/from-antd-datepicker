@@ -10,10 +10,6 @@ import { RangePickerValue } from "./typeing";
 // 组件引用
 import SingleDatePicker from "../SingleDatePicker";
 
-import "moment/locale/zh-cn";
-
-moment.locale("en");
-
 const LayoutCol = styled(Col)`
   position: relative;
 `;
