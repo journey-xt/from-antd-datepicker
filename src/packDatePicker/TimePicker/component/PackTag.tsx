@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { Tag } from "antd";
 
 const PackLayoutTag = styled(Tag.CheckableTag)<{ disabled: boolean }>`
-  margin-bottom: 5px !important;
-  background-color: ${props => props.disabled && "#f5f5f5 !important"};
-  cursor: ${props => (props.disabled ? "not-allowed" : "pointer")}!important;
+  &.ant-tag {
+    margin-bottom: 5px;
+    background-color: ${props => props.disabled && "#f5f5f5"};
+    cursor: ${props => (props.disabled ? "not-allowed" : "pointer")};
+    width: 30px;
+    text-align: center;
+  }
 `;
 
 interface ITag {
