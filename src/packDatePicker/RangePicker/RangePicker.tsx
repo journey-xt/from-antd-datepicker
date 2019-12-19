@@ -33,7 +33,7 @@ type Props = {
   selectTodayAfter?: boolean;
   valueStatus?: ValueStatus;
   format?: string;
-  valueType?: ValueType;
+  valueType?: "timeStamp" | "timeString" | "moment";
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
 };

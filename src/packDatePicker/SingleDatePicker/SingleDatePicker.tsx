@@ -34,7 +34,7 @@ export interface SingleDatePickerProps {
   valueStatus?: ValueStatus; // 在联结选择器中 使用
   defaultPickerValue?: Moment;
   showToday?: boolean;
-  valueType?: ValueType;
+  valueType?: "timeStamp" | "timeString" | "moment";
   value?: string | number | Moment | Date;
   onChange?: (value: PickerValue | null, ValueStatus?) => void;
   disabledDate?: (
