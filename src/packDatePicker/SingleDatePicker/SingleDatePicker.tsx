@@ -96,7 +96,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   }
 
   static defaultProps = {
-    valueType: ValueType.Moment,
+    valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
   };
 
