@@ -37,6 +37,7 @@ export interface SingleDatePickerProps {
   valueType?: "timeStamp" | "timeString" | "moment";
   value?: string | number | Moment | Date;
   onChange?: (value: PickerValue | null, ValueStatus?) => void;
+  placeholder?: string;
   disabledDate?: (
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
@@ -258,11 +259,12 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   render() {
     const { value, dateLayer } = this.state;
-    const { defaultPickerValue, showToday, format } = this.props;
+    const { defaultPickerValue, showToday, format, placeholder } = this.props;
 
     return (
       <PackDataPick
         format={format}
+        placeholder={placeholder}
         value={transformMoment(value)}
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}

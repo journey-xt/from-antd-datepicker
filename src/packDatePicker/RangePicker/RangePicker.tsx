@@ -36,6 +36,7 @@ type Props = {
   valueType?: "timeStamp" | "timeString" | "moment";
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
+  placeholder?: [string, string];
 };
 
 // 声明组件State类型
@@ -373,12 +374,19 @@ class RangePicker extends Component<Props, State> {
     const { value } = this.state;
     const startTime = value[ValueStatus.Start];
     const endTime = value[ValueStatus.End];
-    const { showToday, format, selectTodayAfter, valueType } = this.props;
+    const {
+      showToday,
+      format,
+      selectTodayAfter,
+      valueType,
+      placeholder = [],
+    } = this.props;
 
     return (
       <Row gutter={24}>
         <LayoutCol span={12}>
           <SingleDatePicker
+            placeholder={placeholder[0]}
             format={format}
             value={startTime}
             showToday={showToday}
@@ -398,6 +406,7 @@ class RangePicker extends Component<Props, State> {
         </LayoutDiv>
         <Col span={12}>
           <SingleDatePicker
+            placeholder={placeholder[1]}
             format={format}
             value={endTime}
             showToday={showToday}
