@@ -24,7 +24,9 @@ class DatePickerDemo extends PureComponent<Props, State> {
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item label="单个时间">
-                {getFieldDecorator("singleDate")(<SingleDatePicker />)}
+                {getFieldDecorator("singleDate")(
+                  <SingleDatePicker placeholder="自定义" />
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -39,7 +41,9 @@ class DatePickerDemo extends PureComponent<Props, State> {
             </Col>
             <Col span={8}>
               <Form.Item label="联级时间">
-                {getFieldDecorator("rangeDate")(<RangePicker />)}
+                {getFieldDecorator("rangeDate")(
+                  <RangePicker placeholder={["自定义", "自定义"]} />
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>

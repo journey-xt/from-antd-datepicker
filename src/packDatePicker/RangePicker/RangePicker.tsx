@@ -26,6 +26,7 @@ const RelationSpan = styled.div`
 
 // 声明组件Props类型
 type Props = {
+  placeholder?: string[];
   disabledDate?: (
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
@@ -36,7 +37,6 @@ type Props = {
   valueType?: "timeStamp" | "timeString" | "moment";
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
-  placeholder?: [string, string];
 };
 
 // 声明组件State类型
