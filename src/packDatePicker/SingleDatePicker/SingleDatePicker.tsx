@@ -261,10 +261,12 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     const { value, dateLayer } = this.state;
     const { defaultPickerValue, showToday, format, placeholder } = this.props;
 
+    const extendsPlaceholder = placeholder ? { placeholder } : {};
+
     return (
       <PackDataPick
         format={format}
-        placeholder={placeholder}
+        {...extendsPlaceholder}
         value={transformMoment(value)}
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}

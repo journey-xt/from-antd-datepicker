@@ -395,14 +395,14 @@ class RangePicker extends Component<Props, State> {
       format,
       selectTodayAfter,
       valueType,
-      placeholder = [],
+      placeholder,
     } = this.props;
 
     return (
       <Row gutter={24}>
         <LayoutCol span={12}>
           <SingleDatePicker
-            placeholder={placeholder[0]}
+            placeholder={placeholder ? placeholder[0] : undefined}
             format={format}
             value={startTime}
             showToday={showToday}
@@ -426,7 +426,7 @@ class RangePicker extends Component<Props, State> {
         </LayoutDiv>
         <Col span={12}>
           <SingleDatePicker
-            placeholder={placeholder[1]}
+            placeholder={placeholder ? placeholder[1] : undefined}
             format={format}
             value={endTime}
             showToday={showToday}
