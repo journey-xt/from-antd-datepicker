@@ -17,11 +17,24 @@ const LayoutCol = styled(Col)`
 const LayoutDiv = styled.div`
   position: absolute;
   left: 50%;
+  top: 0;
+  bottom: 0;
 `;
 
 const RelationSpan = styled.div`
   position: relative;
+  height: 100%;
   right: 50%;
+`;
+
+const DisplayTable = styled.div`
+  display: table;
+  height: 100%;
+`;
+
+const DisplayTableCell = styled.div`
+  display: table-cell;
+  vertical-align: middle;
 `;
 
 // 声明组件Props类型
@@ -105,7 +118,7 @@ class RangePicker extends Component<Props, State> {
           }
           return false;
         }
-        return false;
+        return currentDate && endTime ? currentDate.isAfter(endTime) : false;
       case ValueStatus.End:
         if (selectTodayAfter) {
           if (currentDate && !startTime) {
@@ -116,10 +129,13 @@ class RangePicker extends Component<Props, State> {
           }
           return false;
         }
-        return false;
+
+        return currentDate && startTime
+          ? currentDate.isBefore(startTime)
+          : false;
       default:
+        return true;
     }
-    return true;
   };
 
   //  时间变化回调
@@ -401,8 +417,12 @@ class RangePicker extends Component<Props, State> {
             defaultPickerValue={endTime ? moment(endTime) : undefined}
           />
         </LayoutCol>
-        <LayoutDiv>
-          <RelationSpan>~</RelationSpan>
+        <LayoutDiv key="static">
+          <RelationSpan>
+            <DisplayTable>
+              <DisplayTableCell>~</DisplayTableCell>
+            </DisplayTable>
+          </RelationSpan>
         </LayoutDiv>
         <Col span={12}>
           <SingleDatePicker
