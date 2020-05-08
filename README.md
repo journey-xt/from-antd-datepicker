@@ -1,6 +1,6 @@
 layout: page
 title: "from-antd-datepicker"
-permalink: /from-antd-datepicker/example/build
+permalink: /from-antd-datepicker/example/build/index.html
 
 
 # from-antd-datepicker
