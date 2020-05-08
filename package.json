@@ -1,10 +1,11 @@
 {
   "name": "from-antd-datepicker",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "根据antd的datepicker进行包装",
   "author": "journey-xt",
   "license": "MIT",
-  "repository": "journey-xt/datepicker",
+  "homepage": "https://journey-xt.github.io/from-antd-datepicker/",
+  "repository": "journey-xt/from-antd-datepicker",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
