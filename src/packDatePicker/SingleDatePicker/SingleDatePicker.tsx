@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { DatePicker, Button } from "antd";
 import moment from "moment";
 import TimePicker from "../TimePicker";
-// import { transformMoment, transformTimeStamp } from "../utils";
 import { matchTimeFormat, transformMoment } from "../utils";
 
 // 声明文件
@@ -31,6 +30,7 @@ export interface SingleDatePickerProps {
   format?: string;
   selectTodayAfter?: boolean;
   showTime?: boolean;
+  getCalendarContainer?: (triggerNode: Element) => HTMLElement;
   valueStatus?: ValueStatus; // 在联结选择器中 使用
   defaultPickerValue?: Moment;
   showToday?: boolean;
@@ -74,7 +74,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       currentDate: moment(), // 当前时间
       value: props.value, // 内部维护 时间组件的值
       dateLayer: false,
-      timeFormat: "",
+      timeFormat: ""
     };
   }
 
@@ -87,18 +87,18 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (value) {
       return {
         value,
-        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
       };
     }
     return {
       value: stateValue || undefined,
-      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
     };
   }
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD",
+    format: "YYYY-MM-DD"
   };
 
   // 不可选择时间回调
@@ -259,7 +259,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   render() {
     const { value, dateLayer } = this.state;
-    const { defaultPickerValue, showToday, format, placeholder } = this.props;
+    const {
+      defaultPickerValue,
+      showToday,
+      format,
+      placeholder,
+      getCalendarContainer
+    } = this.props;
 
     const extendsPlaceholder = placeholder ? { placeholder } : {};
 
@@ -268,6 +274,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         format={format}
         {...extendsPlaceholder}
         value={transformMoment(value)}
+        getCalendarContainer={getCalendarContainer}
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}
         disabledDate={this.disabledDate}

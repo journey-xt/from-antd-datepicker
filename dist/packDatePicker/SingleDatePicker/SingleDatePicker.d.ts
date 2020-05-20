@@ -7,6 +7,7 @@ export interface SingleDatePickerProps {
     format?: string;
     selectTodayAfter?: boolean;
     showTime?: boolean;
+    getCalendarContainer?: (triggerNode: Element) => HTMLElement;
     valueStatus?: ValueStatus;
     defaultPickerValue?: Moment;
     showToday?: boolean;

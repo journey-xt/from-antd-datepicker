@@ -12,6 +12,7 @@ declare type Props = {
     valueType?: "timeStamp" | "timeString" | "moment";
     onChange?: (value: RangePickerValue) => void;
     showToday?: boolean;
+    getCalendarContainer?: (triggerNode: Element) => HTMLElement;
 };
 declare type State = {
     value: RangePickerValue;

@@ -50,6 +50,7 @@ type Props = {
   valueType?: "timeStamp" | "timeString" | "moment";
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
+  getCalendarContainer?: (triggerNode: Element) => HTMLElement;
 };
 
 // 声明组件State类型
@@ -63,7 +64,7 @@ class RangePicker extends Component<Props, State> {
     super(props);
     this.state = {
       currentDate: moment(),
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }, // 内部维护 时间组件的值
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined } // 内部维护 时间组件的值
     };
   }
 
@@ -71,7 +72,7 @@ class RangePicker extends Component<Props, State> {
     valueType: ValueType.TimeStamp,
     format: "YYYY-MM-DD",
     valueStatus: ValueStatus.Start,
-    showToday: true,
+    showToday: true
   };
 
   static getDerivedStateFromProps(props) {
@@ -81,12 +82,12 @@ class RangePicker extends Component<Props, State> {
       return {
         value: {
           [ValueStatus.Start]: value[ValueStatus.Start],
-          [ValueStatus.End]: value[ValueStatus.End],
-        },
+          [ValueStatus.End]: value[ValueStatus.End]
+        }
       };
     }
     return {
-      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined },
+      value: { [ValueStatus.Start]: undefined, [ValueStatus.End]: undefined }
     };
   }
 
@@ -149,26 +150,26 @@ class RangePicker extends Component<Props, State> {
           if (end && value) {
             onChange({
               [ValueStatus.Start]: moment(value).isAfter(end) ? end : value,
-              [ValueStatus.End]: end,
+              [ValueStatus.End]: end
             });
             return;
           }
           onChange({
             ...stateValue,
-            ...(valueStatus ? { [valueStatus]: value || undefined } : {}),
+            ...(valueStatus ? { [valueStatus]: value || undefined } : {})
           });
           break;
         case ValueStatus.End:
           if (start && value) {
             onChange({
               [ValueStatus.Start]: start,
-              [ValueStatus.End]: moment(value).isBefore(start) ? start : value,
+              [ValueStatus.End]: moment(value).isBefore(start) ? start : value
             });
             return;
           }
           onChange({
             ...stateValue,
-            ...(valueStatus ? { [valueStatus]: value || undefined } : {}),
+            ...(valueStatus ? { [valueStatus]: value || undefined } : {})
           });
           break;
         default:
@@ -178,8 +179,8 @@ class RangePicker extends Component<Props, State> {
       this.setState({
         value: {
           ...stateValue,
-          ...(valueStatus ? { [valueStatus]: value } : {}),
-        },
+          ...(valueStatus ? { [valueStatus]: value } : {})
+        }
       });
     }
   };
@@ -211,7 +212,7 @@ class RangePicker extends Component<Props, State> {
         );
         return [
           ...(selectTodayAfter ? this.createArray(0, currentHour) : []),
-          ...(startIsEnd ? this.createArray(statusStartendHour + 1, 24) : []),
+          ...(startIsEnd ? this.createArray(statusStartendHour + 1, 24) : [])
         ];
 
       case ValueStatus.End:
@@ -233,7 +234,7 @@ class RangePicker extends Component<Props, State> {
 
         return [
           ...(selectTodayAfter ? this.createArray(0, currentHour) : []),
-          ...(endIsStart ? [...this.createArray(0, statusEndStartHour)] : []),
+          ...(endIsStart ? [...this.createArray(0, statusEndStartHour)] : [])
         ];
 
       default:
@@ -266,13 +267,13 @@ class RangePicker extends Component<Props, State> {
             ...(selectTodayAfter && isSameCurrenthour
               ? this.createArray(0, currentMinute)
               : []),
-            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : []),
+            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : [])
           ];
         }
         return [
           ...(selectTodayAfter && isSameCurrenthour
             ? this.createArray(0, currentMinute)
-            : []),
+            : [])
         ];
       case ValueStatus.End:
         const statusEndisSameCurrentHour = (end
@@ -290,13 +291,13 @@ class RangePicker extends Component<Props, State> {
             ...(selectTodayAfter && statusEndisSameCurrentHour
               ? this.createArray(0, currentMinute)
               : []),
-            ...(isSameStartHour ? this.createArray(0, startMinute) : []),
+            ...(isSameStartHour ? this.createArray(0, startMinute) : [])
           ];
         }
         return [
           ...(selectTodayAfter && statusEndisSameCurrentHour
             ? this.createArray(0, currentMinute)
-            : []),
+            : [])
         ];
 
       default:
@@ -329,13 +330,13 @@ class RangePicker extends Component<Props, State> {
             ...(selectTodayAfter && isSameCurrenthour
               ? this.createArray(0, currentMinute)
               : []),
-            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : []),
+            ...(isSameEndHour ? this.createArray(endMinute + 1, 60) : [])
           ];
         }
         return [
           ...(selectTodayAfter && isSameCurrenthour
             ? this.createArray(0, currentMinute)
-            : []),
+            : [])
         ];
       case ValueStatus.End:
         const statusEndisSameCurrentHour = (end
@@ -353,13 +354,13 @@ class RangePicker extends Component<Props, State> {
             ...(selectTodayAfter && statusEndisSameCurrentHour
               ? this.createArray(0, currentMinute)
               : []),
-            ...(isSameStartHour ? this.createArray(0, startMinute) : []),
+            ...(isSameStartHour ? this.createArray(0, startMinute) : [])
           ];
         }
         return [
           ...(selectTodayAfter && statusEndisSameCurrentHour
             ? this.createArray(0, currentMinute)
-            : []),
+            : [])
         ];
       default:
         return [];
@@ -396,6 +397,7 @@ class RangePicker extends Component<Props, State> {
       selectTodayAfter,
       valueType,
       placeholder,
+      getCalendarContainer
     } = this.props;
 
     return (
@@ -415,6 +417,7 @@ class RangePicker extends Component<Props, State> {
             selectTodayAfter={selectTodayAfter}
             onChange={this.onChange}
             defaultPickerValue={endTime ? moment(endTime) : undefined}
+            getCalendarContainer={getCalendarContainer}
           />
         </LayoutCol>
         <LayoutDiv key="static">
@@ -439,6 +442,7 @@ class RangePicker extends Component<Props, State> {
             disabledSeconds={this.disabledSeconds}
             onChange={this.onChange}
             defaultPickerValue={startTime ? moment(startTime) : undefined}
+            getCalendarContainer={getCalendarContainer}
           />
         </Col>
       </Row>
