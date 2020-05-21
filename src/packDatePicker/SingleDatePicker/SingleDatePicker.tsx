@@ -171,7 +171,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     const { disabledHours, valueStatus, selectTodayAfter } = this.props;
     const { currentDate, value } = this.state;
     if (disabledHours) {
-      return disabledHours(transformMoment(value) || currentDate, valueStatus);
+      return disabledHours(currentDate, valueStatus);
     }
 
     if (selectTodayAfter) {

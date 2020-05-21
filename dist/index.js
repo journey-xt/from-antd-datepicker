@@ -5171,7 +5171,7 @@ var SingleDatePicker = /** @class */function (_super) {
                 currentDate = _b.currentDate,
                 value = _b.value;
             if (disabledHours) {
-                return disabledHours(transformMoment(value) || currentDate, valueStatus);
+                return disabledHours(currentDate, valueStatus);
             }
             if (selectTodayAfter) {
                 // 被选中时间
@@ -5344,6 +5344,7 @@ var SingleDatePicker = /** @class */function (_super) {
     return SingleDatePicker;
 }(React.PureComponent);
 var templateObject_1$4, templateObject_2$2;
+//# sourceMappingURL=SingleDatePicker.js.map
 
 //# sourceMappingURL=index.js.map
 
@@ -5455,7 +5456,7 @@ var RangePicker = /** @class */function (_super) {
                     var startMonet = moment(start);
                     var statusEndStartHour = startMonet.hour();
                     var endIsStart = (end ? moment(end) : currentDate).isSame(startMonet, "day");
-                    return __spreadArrays(selectTodayAfter ? _this.createArray(0, currentHour) : [], endIsStart ? __spreadArrays(_this.createArray(0, statusEndStartHour)) : []);
+                    return __spreadArrays(selectTodayAfter && isSameEndCurrent ? _this.createArray(0, currentHour) : [], endIsStart ? __spreadArrays(_this.createArray(0, statusEndStartHour)) : []);
                 default:
                     return [];
             }
@@ -5536,7 +5537,7 @@ var RangePicker = /** @class */function (_super) {
         };
         _this.state = {
             currentDate: moment(),
-            value: (_a = {}, _a[ValueStatus.Start] = undefined, _a[ValueStatus.End] = undefined, _a) // 内部维护 时间组件的值
+            value: (_a = {}, _a[ValueStatus.Start] = undefined, _a[ValueStatus.End] = undefined, _a)
         };
         return _this;
     }
