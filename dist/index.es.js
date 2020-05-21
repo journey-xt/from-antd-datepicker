@@ -4805,6 +4805,16 @@ var fillTen = function (number) {
 };
 //# sourceMappingURL=fill.js.map
 
+var createArray = function (start, end) {
+    var array = [];
+    var len = end;
+    for (var i = start; i < len; i++) {
+        array.push(i);
+    }
+    return array;
+};
+//# sourceMappingURL=createArray.js.map
+
 //# sourceMappingURL=index.js.map
 
 var InputWarp = styled.div(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["\n  display: inline-block;\n  min-height: 38px;\n  width: 50px;\n  & .ant-input {\n    padding: 4px 16px;\n  }\n"], ["\n  display: inline-block;\n  min-height: 38px;\n  width: 50px;\n  & .ant-input {\n    padding: 4px 16px;\n  }\n"])));
@@ -5087,7 +5097,7 @@ var SingleDatePicker = /** @class */function (_super) {
             if (selectTodayAfter) {
                 var compareDate = _this.state.currentDate;
                 if (currentDate) {
-                    return currentDate.isBefore(compareDate, "day");
+                    return currentDate.isBefore(compareDate, "second");
                 }
                 return false;
             }
@@ -5148,10 +5158,32 @@ var SingleDatePicker = /** @class */function (_super) {
         _this.disabledHours = function () {
             var _a = _this.props,
                 disabledHours = _a.disabledHours,
-                valueStatus = _a.valueStatus;
-            var currentDate = _this.state.currentDate;
+                valueStatus = _a.valueStatus,
+                selectTodayAfter = _a.selectTodayAfter;
+            var _b = _this.state,
+                currentDate = _b.currentDate,
+                value = _b.value;
             if (disabledHours) {
-                return disabledHours(currentDate, valueStatus);
+                return disabledHours(transformMoment(value) || currentDate, valueStatus);
+            }
+            if (selectTodayAfter) {
+                // 被选中时间
+                var selectDate = transformMoment(value);
+                // 如果有选中时间
+                if (selectDate) {
+                    // 判断选中时间 是否 是当前时间  且是当日
+                    var isSameStartCurrent = selectDate.isSame(currentDate, "day");
+                    // 当前小时数
+                    var currentHour_1 = selectDate.hour();
+                    // 同为当日 不可选取 已过时间小时
+                    if (isSameStartCurrent) {
+                        return __spreadArrays(createArray(0, currentHour_1));
+                    }
+                    return [];
+                }
+                // 未有选择时间则以当前时间 作为 标准
+                var currentHour = currentDate.hour();
+                return __spreadArrays(createArray(0, currentHour));
             }
             return [];
         };
@@ -5159,10 +5191,32 @@ var SingleDatePicker = /** @class */function (_super) {
         _this.disabledMinutes = function () {
             var _a = _this.props,
                 disabledMinutes = _a.disabledMinutes,
-                valueStatus = _a.valueStatus;
-            var currentDate = _this.state.currentDate;
+                valueStatus = _a.valueStatus,
+                selectTodayAfter = _a.selectTodayAfter;
+            var _b = _this.state,
+                currentDate = _b.currentDate,
+                value = _b.value;
             if (disabledMinutes) {
                 return disabledMinutes(currentDate, valueStatus);
+            }
+            if (selectTodayAfter) {
+                // 被选中时间
+                var selectDate = transformMoment(value);
+                // 如果有选中时间
+                if (selectDate) {
+                    // 判断选中时间 是否 是当前时间  且是当日
+                    var isSameStartCurrent = selectDate.isSame(currentDate, "hour");
+                    // 当前小时数
+                    var currentMinute_1 = selectDate.minute();
+                    // 同为当日 不可选取 已过时间小时
+                    if (isSameStartCurrent) {
+                        return __spreadArrays(createArray(0, currentMinute_1));
+                    }
+                    return [];
+                }
+                // 未有选择时间则以当前时间 作为 标准
+                var currentMinute = currentDate.minute();
+                return __spreadArrays(createArray(0, currentMinute));
             }
             return [];
         };
@@ -5170,10 +5224,32 @@ var SingleDatePicker = /** @class */function (_super) {
         _this.disabledSeconds = function () {
             var _a = _this.props,
                 disabledSeconds = _a.disabledSeconds,
-                valueStatus = _a.valueStatus;
-            var currentDate = _this.state.currentDate;
+                valueStatus = _a.valueStatus,
+                selectTodayAfter = _a.selectTodayAfter;
+            var _b = _this.state,
+                currentDate = _b.currentDate,
+                value = _b.value;
             if (disabledSeconds) {
                 return disabledSeconds(currentDate, valueStatus);
+            }
+            if (selectTodayAfter) {
+                // 被选中时间
+                var selectDate = transformMoment(value);
+                // 如果有选中时间
+                if (selectDate) {
+                    // 判断选中时间 是否 是当前时间  且是当日
+                    var isSameStartCurrent = selectDate.isSame(currentDate, "minute");
+                    // 当前小时数
+                    var currentSecond_1 = selectDate.second();
+                    // 同为当日 不可选取 已过时间小时
+                    if (isSameStartCurrent) {
+                        return __spreadArrays(createArray(0, currentSecond_1));
+                    }
+                    return [];
+                }
+                // 未有选择时间则以当前时间 作为 标准
+                var currentSecond = currentDate.second();
+                return __spreadArrays(createArray(0, currentSecond));
             }
             return [];
         };
@@ -5243,7 +5319,8 @@ var SingleDatePicker = /** @class */function (_super) {
     SingleDatePicker.prototype.render = function () {
         var _a = this.state,
             value = _a.value,
-            dateLayer = _a.dateLayer;
+            dateLayer = _a.dateLayer,
+            currentDate = _a.currentDate;
         var _b = this.props,
             defaultPickerValue = _b.defaultPickerValue,
             showToday = _b.showToday,
@@ -5251,7 +5328,7 @@ var SingleDatePicker = /** @class */function (_super) {
             placeholder = _b.placeholder,
             getCalendarContainer = _b.getCalendarContainer;
         var extendsPlaceholder = placeholder ? { placeholder: placeholder } : {};
-        return React.createElement(PackDataPick, __assign({ format: format }, extendsPlaceholder, { value: transformMoment(value), getCalendarContainer: getCalendarContainer, onOpenChange: this.onOpenChange, onChange: this.onChange, disabledDate: this.disabledDate, defaultPickerValue: defaultPickerValue, showToday: showToday, renderExtraFooter: this.renderExtraFooter, open: dateLayer }));
+        return React.createElement(PackDataPick, __assign({ format: format }, extendsPlaceholder, { value: transformMoment(value), getCalendarContainer: getCalendarContainer, onOpenChange: this.onOpenChange, onChange: this.onChange, disabledDate: this.disabledDate, defaultPickerValue: defaultPickerValue || currentDate, showToday: showToday, renderExtraFooter: this.renderExtraFooter, open: dateLayer }));
     };
     SingleDatePicker.defaultProps = {
         valueType: ValueType.TimeStamp,
@@ -5260,7 +5337,6 @@ var SingleDatePicker = /** @class */function (_super) {
     return SingleDatePicker;
 }(PureComponent);
 var templateObject_1$4, templateObject_2$2;
-//# sourceMappingURL=SingleDatePicker.js.map
 
 //# sourceMappingURL=index.js.map
 

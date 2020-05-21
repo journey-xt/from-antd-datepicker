@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { DatePicker, Button } from "antd";
 import moment from "moment";
 import TimePicker from "../TimePicker";
-import { matchTimeFormat, transformMoment } from "../utils";
+import { matchTimeFormat, transformMoment, createArray } from "../utils";
 
 // 声明文件
 import { Moment } from "moment/moment.d";
@@ -74,7 +74,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       currentDate: moment(), // 当前时间
       value: props.value, // 内部维护 时间组件的值
       dateLayer: false,
-      timeFormat: ""
+      timeFormat: "",
     };
   }
 
@@ -87,18 +87,18 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (value) {
       return {
         value,
-        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
       };
     }
     return {
       value: stateValue || undefined,
-      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
     };
   }
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD"
+    format: "YYYY-MM-DD",
   };
 
   // 不可选择时间回调
@@ -111,7 +111,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (selectTodayAfter) {
       const { currentDate: compareDate } = this.state;
       if (currentDate) {
-        return currentDate.isBefore(compareDate, "day");
+        return currentDate.isBefore(compareDate, "second");
       }
       return false;
     }
@@ -168,30 +168,110 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   // 禁用小时回调
   disabledHours = () => {
-    const { disabledHours, valueStatus } = this.props;
-    const { currentDate } = this.state;
+    const { disabledHours, valueStatus, selectTodayAfter } = this.props;
+    const { currentDate, value } = this.state;
     if (disabledHours) {
-      return disabledHours(currentDate, valueStatus);
+      return disabledHours(transformMoment(value) || currentDate, valueStatus);
     }
+
+    if (selectTodayAfter) {
+      // 被选中时间
+      const selectDate = transformMoment(value);
+
+      // 如果有选中时间
+      if (selectDate) {
+        // 判断选中时间 是否 是当前时间  且是当日
+        const isSameStartCurrent = selectDate.isSame(currentDate, "day");
+
+        // 当前小时数
+        const currentHour = selectDate.hour();
+
+        // 同为当日 不可选取 已过时间小时
+        if (isSameStartCurrent) {
+          return [...createArray(0, currentHour)];
+        }
+
+        return [];
+      }
+
+      // 未有选择时间则以当前时间 作为 标准
+      const currentHour = currentDate.hour();
+
+      return [...createArray(0, currentHour)];
+    }
+
     return [];
   };
 
   // 禁用分钟回调
   disabledMinutes = () => {
-    const { disabledMinutes, valueStatus } = this.props;
-    const { currentDate } = this.state;
+    const { disabledMinutes, valueStatus, selectTodayAfter } = this.props;
+    const { currentDate, value } = this.state;
     if (disabledMinutes) {
       return disabledMinutes(currentDate, valueStatus);
     }
+
+    if (selectTodayAfter) {
+      // 被选中时间
+      const selectDate = transformMoment(value);
+
+      // 如果有选中时间
+      if (selectDate) {
+        // 判断选中时间 是否 是当前时间  且是当日
+        const isSameStartCurrent = selectDate.isSame(currentDate, "hour");
+
+        // 当前小时数
+        const currentMinute = selectDate.minute();
+
+        // 同为当日 不可选取 已过时间小时
+        if (isSameStartCurrent) {
+          return [...createArray(0, currentMinute)];
+        }
+
+        return [];
+      }
+
+      // 未有选择时间则以当前时间 作为 标准
+      const currentMinute = currentDate.minute();
+
+      return [...createArray(0, currentMinute)];
+    }
+
     return [];
   };
 
   // 禁用秒回调
   disabledSeconds = () => {
-    const { disabledSeconds, valueStatus } = this.props;
-    const { currentDate } = this.state;
+    const { disabledSeconds, valueStatus, selectTodayAfter } = this.props;
+    const { currentDate, value } = this.state;
     if (disabledSeconds) {
       return disabledSeconds(currentDate, valueStatus);
+    }
+
+    if (selectTodayAfter) {
+      // 被选中时间
+      const selectDate = transformMoment(value);
+
+      // 如果有选中时间
+      if (selectDate) {
+        // 判断选中时间 是否 是当前时间  且是当日
+        const isSameStartCurrent = selectDate.isSame(currentDate, "minute");
+
+        // 当前小时数
+        const currentSecond = selectDate.second();
+
+        // 同为当日 不可选取 已过时间小时
+        if (isSameStartCurrent) {
+          return [...createArray(0, currentSecond)];
+        }
+
+        return [];
+      }
+
+      // 未有选择时间则以当前时间 作为 标准
+      const currentSecond = currentDate.second();
+
+      return [...createArray(0, currentSecond)];
     }
     return [];
   };
@@ -258,13 +338,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   };
 
   render() {
-    const { value, dateLayer } = this.state;
+    const { value, dateLayer, currentDate } = this.state;
     const {
       defaultPickerValue,
       showToday,
       format,
       placeholder,
-      getCalendarContainer
+      getCalendarContainer,
     } = this.props;
 
     const extendsPlaceholder = placeholder ? { placeholder } : {};
@@ -278,7 +358,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         onOpenChange={this.onOpenChange}
         onChange={this.onChange}
         disabledDate={this.disabledDate}
-        defaultPickerValue={defaultPickerValue}
+        defaultPickerValue={defaultPickerValue || currentDate}
         showToday={showToday}
         renderExtraFooter={this.renderExtraFooter}
         open={dateLayer}
