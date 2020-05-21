@@ -178,13 +178,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       // 被选中时间
       const selectDate = transformMoment(value);
 
+      // 当前小时数
+      const currentHour = currentDate.hour();
+
       // 如果有选中时间
       if (selectDate) {
         // 判断选中时间 是否 是当前时间  且是当日
         const isSameStartCurrent = selectDate.isSame(currentDate, "day");
-
-        // 当前小时数
-        const currentHour = selectDate.hour();
 
         // 同为当日 不可选取 已过时间小时
         if (isSameStartCurrent) {
@@ -193,9 +193,6 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
         return [];
       }
-
-      // 未有选择时间则以当前时间 作为 标准
-      const currentHour = currentDate.hour();
 
       return [...createArray(0, currentHour)];
     }
@@ -215,13 +212,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       // 被选中时间
       const selectDate = transformMoment(value);
 
+      // 当前分钟
+      const currentMinute = currentDate.minute();
+
       // 如果有选中时间
       if (selectDate) {
         // 判断选中时间 是否 是当前时间  且是当日
         const isSameStartCurrent = selectDate.isSame(currentDate, "hour");
-
-        // 当前小时数
-        const currentMinute = selectDate.minute();
 
         // 同为当日 不可选取 已过时间小时
         if (isSameStartCurrent) {
@@ -230,9 +227,6 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
         return [];
       }
-
-      // 未有选择时间则以当前时间 作为 标准
-      const currentMinute = currentDate.minute();
 
       return [...createArray(0, currentMinute)];
     }
@@ -252,13 +246,13 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       // 被选中时间
       const selectDate = transformMoment(value);
 
+      // 当前 秒
+      const currentSecond = currentDate.second();
+
       // 如果有选中时间
       if (selectDate) {
         // 判断选中时间 是否 是当前时间  且是当日
         const isSameStartCurrent = selectDate.isSame(currentDate, "minute");
-
-        // 当前小时数
-        const currentSecond = selectDate.second();
 
         // 同为当日 不可选取 已过时间小时
         if (isSameStartCurrent) {
@@ -267,9 +261,6 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
         return [];
       }
-
-      // 未有选择时间则以当前时间 作为 标准
-      const currentSecond = currentDate.second();
 
       return [...createArray(0, currentSecond)];
     }

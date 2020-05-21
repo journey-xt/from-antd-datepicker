@@ -5152,20 +5152,18 @@ var SingleDatePicker = /** @class */function (_super) {
             if (selectTodayAfter) {
                 // 被选中时间
                 var selectDate = transformMoment(value);
+                // 当前小时数
+                var currentHour = currentDate.hour();
                 // 如果有选中时间
                 if (selectDate) {
                     // 判断选中时间 是否 是当前时间  且是当日
                     var isSameStartCurrent = selectDate.isSame(currentDate, "day");
-                    // 当前小时数
-                    var currentHour_1 = selectDate.hour();
                     // 同为当日 不可选取 已过时间小时
                     if (isSameStartCurrent) {
-                        return __spreadArrays(createArray(0, currentHour_1));
+                        return __spreadArrays(createArray(0, currentHour));
                     }
                     return [];
                 }
-                // 未有选择时间则以当前时间 作为 标准
-                var currentHour = currentDate.hour();
                 return __spreadArrays(createArray(0, currentHour));
             }
             return [];
@@ -5185,20 +5183,18 @@ var SingleDatePicker = /** @class */function (_super) {
             if (selectTodayAfter) {
                 // 被选中时间
                 var selectDate = transformMoment(value);
+                // 当前分钟
+                var currentMinute = currentDate.minute();
                 // 如果有选中时间
                 if (selectDate) {
                     // 判断选中时间 是否 是当前时间  且是当日
                     var isSameStartCurrent = selectDate.isSame(currentDate, "hour");
-                    // 当前小时数
-                    var currentMinute_1 = selectDate.minute();
                     // 同为当日 不可选取 已过时间小时
                     if (isSameStartCurrent) {
-                        return __spreadArrays(createArray(0, currentMinute_1));
+                        return __spreadArrays(createArray(0, currentMinute));
                     }
                     return [];
                 }
-                // 未有选择时间则以当前时间 作为 标准
-                var currentMinute = currentDate.minute();
                 return __spreadArrays(createArray(0, currentMinute));
             }
             return [];
@@ -5218,20 +5214,18 @@ var SingleDatePicker = /** @class */function (_super) {
             if (selectTodayAfter) {
                 // 被选中时间
                 var selectDate = transformMoment(value);
+                // 当前 秒
+                var currentSecond = currentDate.second();
                 // 如果有选中时间
                 if (selectDate) {
                     // 判断选中时间 是否 是当前时间  且是当日
                     var isSameStartCurrent = selectDate.isSame(currentDate, "minute");
-                    // 当前小时数
-                    var currentSecond_1 = selectDate.second();
                     // 同为当日 不可选取 已过时间小时
                     if (isSameStartCurrent) {
-                        return __spreadArrays(createArray(0, currentSecond_1));
+                        return __spreadArrays(createArray(0, currentSecond));
                     }
                     return [];
                 }
-                // 未有选择时间则以当前时间 作为 标准
-                var currentSecond = currentDate.second();
                 return __spreadArrays(createArray(0, currentSecond));
             }
             return [];
