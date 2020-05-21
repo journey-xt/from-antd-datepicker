@@ -1,6 +1,6 @@
 {
   "name": "from-antd-datepicker",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "根据antd的datepicker进行包装",
   "author": "journey-xt",
   "license": "MIT",
