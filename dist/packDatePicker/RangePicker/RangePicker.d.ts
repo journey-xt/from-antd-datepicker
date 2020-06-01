@@ -5,11 +5,14 @@ import { ValueType, ValueStatus } from "../SingleDatePicker/enum";
 import { RangePickerValue } from "./typeing";
 declare type Props = {
     placeholder?: string[];
+    disabled?: [boolean, boolean] | boolean;
+    allowClear?: [boolean, boolean] | boolean;
     disabledDate?: (currentDate: Moment | undefined, valueStatus?: ValueStatus) => boolean;
     selectTodayAfter?: boolean;
     valueStatus?: ValueStatus;
     format?: string;
     valueType?: "timeStamp" | "timeString" | "moment";
+    value?: RangePickerValue;
     onChange?: (value: RangePickerValue) => void;
     showToday?: boolean;
     getCalendarContainer?: (triggerNode: Element) => HTMLElement;

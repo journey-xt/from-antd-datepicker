@@ -5,6 +5,8 @@ import { PickerValue } from "./typeing";
 import { ValueType, ValueStatus } from "./enum";
 export interface SingleDatePickerProps {
     format?: string;
+    disabled?: boolean;
+    allowClear?: boolean;
     selectTodayAfter?: boolean;
     showTime?: boolean;
     getCalendarContainer?: (triggerNode: Element) => HTMLElement;

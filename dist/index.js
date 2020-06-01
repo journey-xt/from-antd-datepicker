@@ -5310,9 +5310,11 @@ var SingleDatePicker = /** @class */function (_super) {
             showToday = _b.showToday,
             format = _b.format,
             placeholder = _b.placeholder,
-            getCalendarContainer = _b.getCalendarContainer;
+            getCalendarContainer = _b.getCalendarContainer,
+            disabled = _b.disabled,
+            allowClear = _b.allowClear;
         var extendsPlaceholder = placeholder ? { placeholder: placeholder } : {};
-        return React__default.createElement(PackDataPick, __assign({ format: format }, extendsPlaceholder, { value: transformMoment(value), getCalendarContainer: getCalendarContainer, onOpenChange: this.onOpenChange, onChange: this.onChange, disabledDate: this.disabledDate, defaultPickerValue: defaultPickerValue || currentDate, showToday: showToday, renderExtraFooter: this.renderExtraFooter, open: dateLayer }));
+        return React__default.createElement(PackDataPick, __assign({ format: format }, extendsPlaceholder, { value: transformMoment(value), getCalendarContainer: getCalendarContainer, onOpenChange: this.onOpenChange, disabled: disabled, allowClear: allowClear, onChange: this.onChange, disabledDate: this.disabledDate, defaultPickerValue: defaultPickerValue || currentDate, showToday: showToday, renderExtraFooter: this.renderExtraFooter, open: dateLayer }));
     };
     SingleDatePicker.defaultProps = {
         valueType: ValueType.TimeStamp,
@@ -5537,8 +5539,10 @@ var RangePicker = /** @class */function (_super) {
             selectTodayAfter = _a.selectTodayAfter,
             valueType = _a.valueType,
             placeholder = _a.placeholder,
-            getCalendarContainer = _a.getCalendarContainer;
-        return React__default.createElement(_Row, { gutter: 24 }, React__default.createElement(LayoutCol, { span: 12 }, React__default.createElement(SingleDatePicker, { placeholder: placeholder ? placeholder[0] : undefined, format: format, value: startTime, showToday: showToday, valueType: valueType, valueStatus: ValueStatus.Start, disabledDate: this.disabledDate, disabledHours: this.disabledHours, disabledMinutes: this.disabledMinutes, disabledSeconds: this.disabledSeconds, selectTodayAfter: selectTodayAfter, onChange: this.onChange, defaultPickerValue: endTime ? moment(endTime) : undefined, getCalendarContainer: getCalendarContainer })), React__default.createElement(LayoutDiv, { key: "static" }, React__default.createElement(RelationSpan, null, React__default.createElement(DisplayTable, null, React__default.createElement(DisplayTableCell, null, "~")))), React__default.createElement(_Col, { span: 12 }, React__default.createElement(SingleDatePicker, { placeholder: placeholder ? placeholder[1] : undefined, format: format, value: endTime, showToday: showToday, valueType: valueType, selectTodayAfter: selectTodayAfter, valueStatus: ValueStatus.End, disabledDate: this.disabledDate, disabledHours: this.disabledHours, disabledMinutes: this.disabledMinutes, disabledSeconds: this.disabledSeconds, onChange: this.onChange, defaultPickerValue: startTime ? moment(startTime) : undefined, getCalendarContainer: getCalendarContainer })));
+            getCalendarContainer = _a.getCalendarContainer,
+            disabled = _a.disabled,
+            allowClear = _a.allowClear;
+        return React__default.createElement(_Row, { gutter: 24 }, React__default.createElement(LayoutCol, { span: 12 }, React__default.createElement(SingleDatePicker, { placeholder: placeholder ? placeholder[0] : undefined, format: format, value: startTime, showToday: showToday, valueType: valueType, valueStatus: ValueStatus.Start, disabled: disabled && Array.isArray(disabled) ? disabled[0] : disabled, allowClear: allowClear && Array.isArray(allowClear) ? allowClear[0] : allowClear, disabledDate: this.disabledDate, disabledHours: this.disabledHours, disabledMinutes: this.disabledMinutes, disabledSeconds: this.disabledSeconds, selectTodayAfter: selectTodayAfter, onChange: this.onChange, defaultPickerValue: endTime ? moment(endTime) : undefined, getCalendarContainer: getCalendarContainer })), React__default.createElement(LayoutDiv, { key: "static" }, React__default.createElement(RelationSpan, null, React__default.createElement(DisplayTable, null, React__default.createElement(DisplayTableCell, null, "~")))), React__default.createElement(_Col, { span: 12 }, React__default.createElement(SingleDatePicker, { placeholder: placeholder ? placeholder[1] : undefined, format: format, value: endTime, showToday: showToday, valueType: valueType, selectTodayAfter: selectTodayAfter, valueStatus: ValueStatus.End, disabled: disabled && Array.isArray(disabled) ? disabled[0] : disabled, allowClear: allowClear && Array.isArray(allowClear) ? allowClear[0] : allowClear, disabledDate: this.disabledDate, disabledHours: this.disabledHours, disabledMinutes: this.disabledMinutes, disabledSeconds: this.disabledSeconds, onChange: this.onChange, defaultPickerValue: startTime ? moment(startTime) : undefined, getCalendarContainer: getCalendarContainer })));
     };
     RangePicker.defaultProps = {
         valueType: ValueType.TimeStamp,
