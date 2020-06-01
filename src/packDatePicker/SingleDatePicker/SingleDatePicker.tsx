@@ -28,6 +28,8 @@ const RenderTimeWarp = styled.div`
 // 声明组件Props类型
 export interface SingleDatePickerProps {
   format?: string;
+  disabled?: boolean;
+  allowClear?: boolean;
   selectTodayAfter?: boolean;
   showTime?: boolean;
   getCalendarContainer?: (triggerNode: Element) => HTMLElement;
@@ -336,6 +338,8 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       format,
       placeholder,
       getCalendarContainer,
+      disabled,
+      allowClear,
     } = this.props;
 
     const extendsPlaceholder = placeholder ? { placeholder } : {};
@@ -347,6 +351,8 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         value={transformMoment(value)}
         getCalendarContainer={getCalendarContainer}
         onOpenChange={this.onOpenChange}
+        disabled={disabled}
+        allowClear={allowClear}
         onChange={this.onChange}
         disabledDate={this.disabledDate}
         defaultPickerValue={defaultPickerValue || currentDate}

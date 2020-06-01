@@ -40,6 +40,8 @@ const DisplayTableCell = styled.div`
 // 声明组件Props类型
 type Props = {
   placeholder?: string[];
+  disabled?: [boolean, boolean] | boolean;
+  allowClear?: [boolean, boolean] | boolean;
   disabledDate?: (
     currentDate: Moment | undefined,
     valueStatus?: ValueStatus
@@ -48,6 +50,7 @@ type Props = {
   valueStatus?: ValueStatus;
   format?: string;
   valueType?: "timeStamp" | "timeString" | "moment";
+  value?: RangePickerValue;
   onChange?: (value: RangePickerValue) => void;
   showToday?: boolean;
   getCalendarContainer?: (triggerNode: Element) => HTMLElement;
@@ -401,6 +404,8 @@ class RangePicker extends Component<Props, State> {
       valueType,
       placeholder,
       getCalendarContainer,
+      disabled,
+      allowClear,
     } = this.props;
 
     return (
@@ -413,6 +418,14 @@ class RangePicker extends Component<Props, State> {
             showToday={showToday}
             valueType={valueType}
             valueStatus={ValueStatus.Start}
+            disabled={
+              disabled && Array.isArray(disabled) ? disabled[0] : disabled
+            }
+            allowClear={
+              allowClear && Array.isArray(allowClear)
+                ? allowClear[0]
+                : allowClear
+            }
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
             disabledMinutes={this.disabledMinutes}
@@ -439,6 +452,14 @@ class RangePicker extends Component<Props, State> {
             valueType={valueType}
             selectTodayAfter={selectTodayAfter}
             valueStatus={ValueStatus.End}
+            disabled={
+              disabled && Array.isArray(disabled) ? disabled[0] : disabled
+            }
+            allowClear={
+              allowClear && Array.isArray(allowClear)
+                ? allowClear[0]
+                : allowClear
+            }
             disabledDate={this.disabledDate}
             disabledHours={this.disabledHours}
             disabledMinutes={this.disabledMinutes}
