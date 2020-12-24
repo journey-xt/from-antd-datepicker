@@ -148,6 +148,9 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
   // 时间变化回调
   onChange = (date: Moment | null, dateString: string) => {
     const { valueType, valueStatus, onChange } = this.props;
+
+    console.log(date);
+
     const { timeFormat } = this.state;
     // 解决 date 组件 隐藏
     if (timeFormat) {
@@ -312,6 +315,8 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
 
   // 文档写的是 显示面板回调  但是貌似是 获取焦点和失去焦点回调
   onOpenChange = (status: boolean) => {
+    console.log(status);
+
     if (this.timeLayer) {
       return;
     }
@@ -354,6 +359,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
         disabled={disabled}
         allowClear={allowClear}
         onChange={this.onChange}
+        // @ts-ignore
         disabledDate={this.disabledDate}
         defaultPickerValue={defaultPickerValue || currentDate}
         showToday={showToday}

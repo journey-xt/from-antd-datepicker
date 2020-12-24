@@ -9,7 +9,7 @@ export interface SingleDatePickerProps {
     allowClear?: boolean;
     selectTodayAfter?: boolean;
     showTime?: boolean;
-    getCalendarContainer?: (triggerNode: Element) => HTMLElement;
+    getCalendarContainer?: (triggerNode: HTMLElement) => HTMLElement;
     valueStatus?: ValueStatus;
     defaultPickerValue?: Moment;
     showToday?: boolean;
@@ -39,9 +39,9 @@ declare class SingleDatePicker extends PureComponent<SingleDatePickerProps, Stat
         valueType: ValueType;
         format: string;
     };
-    disabledDate: (currentDate: moment.Moment | undefined) => boolean;
-    timeStampBack: (date: moment.Moment | null, valueStatus?: ValueStatus | undefined) => string | number | moment.Moment | null;
-    onChange: (date: moment.Moment | null, dateString: string) => void;
+    disabledDate: (currentDate: Moment | undefined) => boolean;
+    timeStampBack: (date: Moment | null, valueStatus?: ValueStatus | undefined) => string | number | moment.Moment | null;
+    onChange: (date: Moment | null, dateString: string) => void;
     disabledHours: () => number[];
     disabledMinutes: () => number[];
     disabledSeconds: () => number[];

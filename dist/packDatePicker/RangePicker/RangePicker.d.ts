@@ -1,6 +1,7 @@
 import { Component } from "react";
 import moment from "moment";
 import { Moment } from "moment/moment.d";
+import { PickerValue } from "../SingleDatePicker/typeing";
 import { ValueType, ValueStatus } from "../SingleDatePicker/enum";
 import { RangePickerValue } from "./typeing";
 declare type Props = {
@@ -31,15 +32,15 @@ declare class RangePicker extends Component<Props, State> {
     };
     static getDerivedStateFromProps(props: any): {
         value: {
-            [ValueStatus.Start]: any;
-            [ValueStatus.End]: any;
+            start: any;
+            end: any;
         };
     };
-    disabledDate: (currentDate: moment.Moment | undefined, valueStatus?: ValueStatus | undefined) => boolean;
-    onChange: (value: string | number | moment.Moment | null, valueStatus?: ValueStatus | undefined) => void;
+    disabledDate: (currentDate: Moment | undefined, valueStatus?: ValueStatus | undefined) => boolean;
+    onChange: (value: PickerValue | null, valueStatus?: ValueStatus | undefined) => void;
     disabledHours: (currentDate: any, valueStatus?: ValueStatus | undefined) => number[];
-    disabledMinutes: (currentDate: moment.Moment, valueStatus?: ValueStatus | undefined) => number[];
-    disabledSeconds: (currentDate: moment.Moment, valueStatus?: ValueStatus | undefined) => number[];
+    disabledMinutes: (currentDate: Moment, valueStatus?: ValueStatus | undefined) => number[];
+    disabledSeconds: (currentDate: Moment, valueStatus?: ValueStatus | undefined) => number[];
     createArray: (start: number, end: number) => number[];
     timeDefaultPickerValue: (type: any) => moment.Moment;
     render(): JSX.Element;

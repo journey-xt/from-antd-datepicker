@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Moment } from "moment/moment.d";
 import { RangePickerValue } from "./typeing";
 import { ValueStatus, ValueType } from "../SingleDatePicker";

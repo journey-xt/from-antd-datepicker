@@ -20,10 +20,10 @@ declare class TimeInput extends PureComponent<Props, State> {
     constructor(props: any);
     handleChange: (e: any) => void;
     getDisabled: () => number[];
-    computeTagNumber: (max: number, step: number) => {
+    computeTagNumber: (max: number, step: number) => Array<{
         value: string;
         disabled: boolean;
-    }[];
+    }>;
     onFocus: () => void;
     tagOnClick: (time: any) => void;
     onVisibleChange: (visible: any) => void;

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Form, Layout, Row, Col } from "antd";
+import { Form, Layout, Row, Col, DatePicker } from "antd";
 import { FormComponentProps } from "antd/lib/form";
 import SingleDatePicker from "from-antd-datepicker";
 import { StyleSheetManager } from "styled-components";
@@ -32,6 +32,16 @@ class ModalForm extends PureComponent<Props, State> {
                       selectTodayAfter
                       placeholder="modal中弹出DatePicker"
                       //  getCalendarContainer={trigger => trigger as HTMLElement}
+                      getCalendarContainer={trigger => trigger.parentElement}
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="原始DatePicker">
+                  {getFieldDecorator("singleDate")(
+                    <DatePicker
+                      placeholder="自定义"
                       getCalendarContainer={trigger => trigger.parentElement}
                     />
                   )}
