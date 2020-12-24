@@ -32,7 +32,7 @@ export interface SingleDatePickerProps {
   allowClear?: boolean;
   selectTodayAfter?: boolean;
   showTime?: boolean;
-  getCalendarContainer?: (triggerNode: Element) => HTMLElement;
+  getCalendarContainer?: (triggerNode: HTMLElement) => HTMLElement;
   valueStatus?: ValueStatus; // 在联结选择器中 使用
   defaultPickerValue?: Moment;
   showToday?: boolean;
@@ -76,7 +76,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       currentDate: moment(), // 当前时间
       value: props.value, // 内部维护 时间组件的值
       dateLayer: false,
-      timeFormat: "",
+      timeFormat: ""
     };
   }
 
@@ -89,18 +89,18 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
     if (value) {
       return {
         value,
-        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+        timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
       };
     }
     return {
       value: stateValue || undefined,
-      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : "",
+      timeFormat: Array.isArray(timeFormatMatch) ? timeFormatMatch[0] : ""
     };
   }
 
   static defaultProps = {
     valueType: ValueType.TimeStamp,
-    format: "YYYY-MM-DD",
+    format: "YYYY-MM-DD"
   };
 
   // 不可选择时间回调
@@ -339,7 +339,7 @@ class SingleDatePicker extends PureComponent<SingleDatePickerProps, State> {
       placeholder,
       getCalendarContainer,
       disabled,
-      allowClear,
+      allowClear
     } = this.props;
 
     const extendsPlaceholder = placeholder ? { placeholder } : {};

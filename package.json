@@ -24,15 +24,14 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "antd": "^3.25.0",
-    "react": "^16.11.0",
+    "antd": "4.9.0",
     "lodash": "^4.17.15",
+    "react": "^16.11.0",
     "react-dom": "^16.4.1",
     "styled-components": "^4.4.1"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",
-    "@types/antd": "^1.0.0",
     "@types/jest": "^23.1.5",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.3",

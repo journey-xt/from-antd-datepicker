@@ -32,7 +32,7 @@ class ModalForm extends PureComponent<Props, State> {
                       selectTodayAfter
                       placeholder="modal中弹出DatePicker"
                       //  getCalendarContainer={trigger => trigger as HTMLElement}
-                      getCalendarContainer={trigger => window.top.document.body}
+                      getCalendarContainer={trigger => trigger.parentElement}
                     />
                   )}
                 </Form.Item>
@@ -48,5 +48,5 @@ class ModalForm extends PureComponent<Props, State> {
 export default Form.create({
   onValuesChange(props, changedValues, allValues) {
     console.log(allValues);
-  },
+  }
 })(ModalForm);

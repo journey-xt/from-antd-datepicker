@@ -5497,7 +5497,6 @@ var RangePicker = /** @class */function (_super) {
         };
         // 结束时间 默认面板日期
         _this.timeDefaultPickerValue = function (type) {
-            console.log(1111);
             var value = _this.state.value;
             if (value[type]) {
                 return moment(value[type]);
