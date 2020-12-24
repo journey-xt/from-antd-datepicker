@@ -385,7 +385,6 @@ class RangePicker extends Component<Props, State> {
 
   // 结束时间 默认面板日期
   timeDefaultPickerValue = type => {
-    console.log(1111);
     const { value } = this.state;
     if (value[type]) {
       return moment(value[type]);
