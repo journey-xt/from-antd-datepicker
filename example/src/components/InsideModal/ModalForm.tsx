@@ -32,7 +32,7 @@ class ModalForm extends PureComponent<Props, State> {
                       selectTodayAfter
                       placeholder="modal中弹出DatePicker"
                       //  getCalendarContainer={trigger => trigger as HTMLElement}
-                      getCalendarContainer={trigger => trigger.parentElement}
+                      getCalendarContainer={trigger => window.top.document.body}
                     />
                   )}
                 </Form.Item>
@@ -42,7 +42,7 @@ class ModalForm extends PureComponent<Props, State> {
                   {getFieldDecorator("singleDate")(
                     <DatePicker
                       placeholder="自定义"
-                      getCalendarContainer={trigger => trigger.parentElement}
+                      getCalendarContainer={trigger => window.top.document.body}
                     />
                   )}
                 </Form.Item>
